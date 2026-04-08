@@ -1,0 +1,126 @@
+{
+  "name": "reclaim-debt-collection",
+  "version": "1.0.0",
+  "description": "ReClaim - Debt Collection Front-End Prototype. نظام إدارة تحصيل ديون حديث.",
+  "main": "index.html",
+  "author": "ReClaim Team",
+  "license": "Proprietary",
+  "keywords": [
+    "debt-collection",
+    "collections-management",
+    "installment-tracking",
+    "analytics",
+    "prototype"
+  ],
+  "scripts": {
+    "dev": "python -m http.server 8000",
+    "start": "python -m http.server 8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "chart.js": "^3.9.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "description_ar": "نظام إدارة شامل لتحصيل الديون يوفر واجهة مستخدم حديثة لإدارة العملاء المتخلفين وتتبع التقسيطات والتحليلات المتقدمة.",
+  "pages": [
+    "index.html - الصفحة الرئيسية مع جميع التبويبات",
+    "overdue.html - إدارة العملاء المتخلفين",
+    "installments.html - تتبع التقسيطات والدفعات",
+    "analytics.html - لوحة التحليلات والرسوم البيانية",
+    "installments-history.html - ملف العميل الشامل"
+  ],
+  "assets": [
+    "assets/styles.css - أنماط التصميم الأساسية",
+    "assets/theme-overrides.css - تجاوزات المظهر والديكور",
+    "assets/data.js - البيانات الوهمية والدوال المساعدة",
+    "assets/index.js - منطق الصفحة الرئيسية",
+    "assets/overdue.js - منطق صفحة المتخلفين",
+    "assets/installments.js - منطق صفحة التقسيطات",
+    "assets/analytics.js - منطق صفحة التحليلات",
+    "assets/installments-history.js - منطق ملف العميل"
+  ],
+  "external-libraries": {
+    "chart.js": {
+      "version": "^3.9.0",
+      "source": "https://cdn.jsdelivr.net/npm/chart.js",
+      "purpose": "رسوم بيانية تفاعلية - Interactive charting library"
+    },
+    "google-fonts": {
+      "fonts": ["Space Grotesk", "IBM Plex Sans"],
+      "source": "https://fonts.googleapis.com/css2",
+      "purpose": "خطوط حديثة - Modern typography"
+    },
+    "randomuser-api": {
+      "source": "https://randomuser.me/api/portraits/",
+      "purpose": "صور العملاء الوهمية - Mock customer photos"
+    },
+    "ui-avatars": {
+      "source": "https://ui-avatars.com/api/",
+      "purpose": "توليد الصور الرمزية - Avatar generation fallback"
+    }
+  },
+  "browser-support": {
+    "chrome": ">=90",
+    "firefox": ">=88",
+    "safari": ">=14",
+    "edge": ">=90"
+  },
+  "features": {
+    "overdue-customers": {
+      "description": "إدارة شاملة للعملاء المتخلفين مع البحث والتصفية",
+      "capabilities": [
+        "بحث بالاسم والهاتف والبريد",
+        "تصفية حسب درجة الأولوية",
+        "تسجيل المتابعات",
+        "عرض سجل الأنشطة"
+      ]
+    },
+    "installment-tracking": {
+      "description": "تتبع دقيق للتقسيطات والدفعات",
+      "capabilities": [
+        "تصفية حسب حالة التقسيط",
+        "حساب الرسوم المتأخرة تلقائياً",
+        "تسجيل الدفعات",
+        "إعادة حساب إجمالي الرسوم"
+      ]
+    },
+    "analytics-dashboard": {
+      "description": "تحليلات متقدمة بالرسوم البيانية",
+      "capabilities": [
+        "عرض على فترات زمنية مختلفة",
+        "المبالغ المحصلة مقابل المستحقة",
+        "معدلات التحصيل",
+        "حسابات العمولة"
+      ]
+    },
+    "customer-profile": {
+      "description": "ملف شامل لكل عميل",
+      "capabilities": [
+        "معلومات التحصيل الكاملة",
+        "سجل التقسيطات",
+        "الأنشطة والتعليقات",
+        "المستندات المرفقة"
+      ]
+    }
+  },
+  "accessibility": {
+    "wcag": "Level AA",
+    "features": [
+      "ARIA labels على جميع العناصر التفاعلية",
+      "HTML semantic (nav, main, section, etc)",
+      "Keyboard navigation مدعومة",
+      "Color contrast متوافق مع المعايير"
+    ]
+  }
+}

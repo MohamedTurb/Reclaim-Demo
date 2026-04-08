@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReClaim - Debt Collection Front-End Prototype</title>
+
+  <!-- Typography chosen to feel modern and distinctive -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js from CDN for dashboard visuals -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/theme-overrides.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo-wrap">
+        <h1>ReClaim</h1>
+        <p>Debt Collection System Prototype</p>
+      </div>
+
+      <p class="sidebar-label">Modules</p>
+
+      <nav aria-label="Primary Modules">
+        <ul class="nav-list">
+          <li><button class="nav-btn active" data-target="overdueModule">Overdue Customers</button></li>
+          <li><button class="nav-btn" data-target="installmentModule">Installment Tracking</button></li>
+          <li><button class="nav-btn" data-target="analyticsModule">Analytics Dashboard</button></li>
+          <li><button class="nav-btn" data-href="installments-history.html">Installment History</button></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main">
+        <h2>Collection Command Center</h2>
+        <p>Monitor overdue customers, inspect detailed profiles, track installments, and review collection trends from one interface.</p>
+      </header>
+
+      <section class="grid-cards" aria-label="Top metrics">
+        <article class="metric-card">
+          <small>Total Overdue Accounts</small>
+          <strong id="metricOverdueAccounts">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Total Overdue Amount</small>
+          <strong id="metricOverdueAmount">$0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Payments This Month</small>
+          <strong id="metricPayments">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Avg Days Past Due</small>
+          <strong id="metricAvgDays">0</strong>
+        </article>
+      </section>
+
+      <!-- Overdue Customers Management -->
+      <section id="overdueModule" class="module active" aria-labelledby="overdueHeading">
+        <article class="card">
+          <div class="row">
+            <h3 id="overdueHeading">Overdue Customers Management</h3>
+            <div class="controls">
+              <input id="overdueSearch" type="search" placeholder="Search name or contact" aria-label="Search overdue customers" />
+              <select id="priorityFilter" aria-label="Filter by priority">
+                <option value="all">All Priorities</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table aria-label="Overdue customers table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Contact</th>
+                  <th><button data-sort="overdueAmount">Overdue (Amount + Days)</button></th>
+                  <th>Activity Log (Comments)</th>
+                  <th>Priority</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="overdueTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <!-- Installment Tracking -->
+      <section id="installmentModule" class="module" aria-labelledby="installmentHeading">
+        <article class="card">
+          <div class="row">
+            <h3 id="installmentHeading">Installment Tracking</h3>
+            <div class="controls">
+              <select id="installmentStatusFilter" aria-label="Filter installment status">
+                <option value="all">All Statuses</option>
+                <option value="paid">Paid</option>
+                <option value="pending">Pending</option>
+                <option value="overdue">Overdue</option>
+                <option value="partial">Partial</option>
+              </select>
+              <button class="btn-primary" id="recalcTotalsBtn">Recalculate Totals</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table aria-label="Installment tracking table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Due Date</th>
+                  <th>Amount</th>
+                  <th>Late Fee</th>
+                  <th>Total Payable</th>
+                  <th>Status</th>
+                  <th>Late Days</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="installmentTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <!-- Analytics Dashboard -->
+      <section id="analyticsModule" class="module" aria-labelledby="analyticsHeading">
+        <article class="card">
+          <div class="row">
+            <h3 id="analyticsHeading">Analytics Dashboard</h3>
+            <div class="controls">
+              <select id="rangeSelector" aria-label="Select report range">
+                <option value="monthly">Monthly</option>
+                <option value="quarterly">Quarterly</option>
+              </select>
+              <button class="btn-outline" id="shuffleDataBtn">Simulate New Data</button>
+            </div>
+          </div>
+
+          <div class="chart-grid">
+            <div class="chart-box">
+              <h4 class="chart-title">Collection Success Trend</h4>
+              <canvas id="collectionChart" aria-label="Collection trend chart" role="img"></canvas>
+            </div>
+            <div class="chart-box">
+              <h4 class="chart-title">Installment Buckets</h4>
+              <canvas id="bucketChart" aria-label="Installment buckets chart" role="img"></canvas>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <!-- Shared modal for quick actions and previews -->
+  <div id="actionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <div class="row modal-header-row">
+        <h3 id="modalTitle">Action</h3>
+        <button id="modalCloseBtn" class="btn-outline" aria-label="Close modal">Close</button>
+      </div>
+      <p id="modalDesc" class="modal-desc"></p>
+      <textarea id="modalComment" placeholder="Add optional comment..."></textarea>
+      <div class="controls controls-end">
+        <button id="modalConfirmBtn" class="btn-primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error handling & notifications system -->
+  <script src="assets/error-handler.js"></script>
+  <!-- Core data and utility functions -->
+  <script src="assets/data.js"></script>
+  <!-- Main dashboard logic -->
+  <script src="assets/index.js"></script>
+</body>
+</html>
+

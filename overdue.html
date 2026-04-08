@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReClaim - Overdue Customers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/theme-overrides.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo-wrap">
+        <h1>ReClaim</h1>
+        <p>Debt Collection System Prototype</p>
+      </div>
+      <nav aria-label="Primary Modules">
+        <ul class="nav-list">
+          <li><a class="nav-link active" href="overdue.html">Overdue Customers</a></li>
+          <li><a class="nav-link" href="installments.html">Installment Tracking</a></li>
+          <li><a class="nav-link" href="analytics.html">Analytics Dashboard</a></li>
+          <li><a class="nav-link" href="installments-history.html">Installment History</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="hero">
+        <h2>Overdue Customers Management</h2>
+        <p>Search by customer identity, filter by priority, and log follow-up updates for debt recovery.</p>
+      </header>
+
+      <section class="grid-cards" aria-label="Top metrics">
+        <article class="metric-card">
+          <small>Total Overdue Accounts</small>
+          <strong id="metricOverdueAccounts">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Total Overdue Amount</small>
+          <strong id="metricOverdueAmount">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Payments This Month</small>
+          <strong id="metricPayments">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Avg Days Past Due</small>
+          <strong id="metricAvgDays">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Projected Commission</small>
+          <strong id="metricCommission">0</strong>
+        </article>
+      </section>
+
+      <section class="card" aria-labelledby="overdueHeading">
+        <div class="row">
+          <h3 id="overdueHeading">Overdue Queue</h3>
+          <div class="controls">
+            <input id="overdueSearch" type="search" placeholder="Search name or contact" aria-label="Search overdue customers" />
+            <select id="priorityFilter" aria-label="Filter by priority">
+              <option value="all">All Priorities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table aria-label="Overdue customers table">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Contact</th>
+                <th><button data-sort="overdueAmount">Overdue (Amount + Days)</button></th>
+                <th>Activity Log (Comments)</th>
+                <th>Priority</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="overdueTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="agingBucketsHeading">
+        <div class="row">
+          <h3 id="agingBucketsHeading">Aging Buckets</h3>
+        </div>
+        <div id="agingBuckets" class="aging-grid" aria-live="polite"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="actionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <div class="row modal-header-row">
+        <h3 id="modalTitle">Action</h3>
+        <button id="modalCloseBtn" class="btn-outline" aria-label="Close modal">Close</button>
+      </div>
+      <p id="modalDesc" class="modal-desc"></p>
+      <textarea id="modalComment" placeholder="Add optional comment..."></textarea>
+      <div class="controls controls-end">
+        <button id="modalConfirmBtn" class="btn-primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/overdue.js"></script>
+</body>
+</html>

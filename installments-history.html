@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReClaim - Installments History</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/theme-overrides.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo-wrap">
+        <h1>ReClaim</h1>
+        <p>Debt Collection System Prototype</p>
+      </div>
+      <nav aria-label="Primary Modules">
+        <ul class="nav-list">
+          <li><a class="nav-link" href="overdue.html">Overdue Customers</a></li>
+          <li><a class="nav-link" href="installments.html">Installment Tracking</a></li>
+          <li><a class="nav-link" href="analytics.html">Analytics Dashboard</a></li>
+          <li><a class="nav-link active" href="installments-history.html">Installment History</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="hero">
+        <h2 id="pageTitle">Customer Profile</h2>
+        <p>Dedicated customer page with profile details, overdue metrics, activity log, and document overview.</p>
+      </header>
+
+      <section class="layout" aria-label="customer profile layout">
+        <article class="card">
+          <div class="head">
+            <div id="customerAvatar" class="avatar">NA</div>
+            <div>
+              <h3 id="customerName" class="name">Customer Name</h3>
+              <p id="customerMeta" class="sub">Customer ID</p>
+              <p id="customerContact" class="sub">Contact details</p>
+              <p id="customerDebt" class="debt-line">Overdue summary</p>
+              <span id="customerPriority" class="badge">LOW</span>
+            </div>
+          </div>
+
+          <div class="blocks">
+            <article class="block">
+              <h4 class="panel-title">Personal & Financial</h4>
+              <p class="kv"><strong>ID:</strong> <span id="profileCustomerId">-</span></p>
+              <p class="kv"><strong>Total Overdue:</strong> <span id="profileTotalOverdue">-</span></p>
+              <p class="kv"><strong>Days Past Due:</strong> <span id="profileDaysPastDue">-</span></p>
+            </article>
+            <article class="block">
+              <h4 class="panel-title">Installment Status</h4>
+              <p class="kv"><strong>Open Installments:</strong> <span id="profileOpenInstallments">-</span></p>
+              <p class="kv"><strong>Paid Installments:</strong> <span id="profilePaidInstallments">-</span></p>
+              <p class="kv"><strong>Collection Rate:</strong> <span id="profileCollectedPercent">-</span></p>
+            </article>
+            <article class="block">
+              <h4 class="panel-title">Contact Information</h4>
+              <p class="kv"><strong>Phone:</strong> <span id="profilePhone">-</span></p>
+              <p class="kv"><strong>Email:</strong> <span id="profileEmail">-</span></p>
+              <p class="kv"><strong>Address:</strong> <span id="profileAddress">-</span></p>
+            </article>
+          </div>
+
+          <article class="card subcard-flat" aria-label="installment timeline">
+            <h4 class="panel-title">Installments Timeline</h4>
+            <div id="timelineList" class="activity-list"></div>
+          </article>
+
+          <div class="docs" aria-label="customer documents">
+            <div>
+              <h4 class="panel-title">Documents</h4>
+              <ul id="docList" class="doc-list"></ul>
+            </div>
+            <div>
+              <h4 id="docPreviewTitle" class="panel-title">Document Preview</h4>
+              <div id="docPreview" class="preview">Choose a document to preview.</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h4 class="panel-title">Activity Log</h4>
+          <div id="activityList" class="activity-list"></div>
+          <div class="comment-wrap">
+            <textarea id="activityComment" placeholder="Write a new activity comment..."></textarea>
+            <div class="comment-actions">
+              <button id="addCommentBtn" class="btn-primary">Add Comment</button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="summary" aria-label="installment summary">
+        <article class="metric">
+          <small>Total Installments</small>
+          <strong id="mTotal">0</strong>
+        </article>
+        <article class="metric">
+          <small>Total Payable</small>
+          <strong id="mPayable">$0</strong>
+        </article>
+        <article class="metric">
+          <small>Overdue Count</small>
+          <strong id="mOverdue">0</strong>
+        </article>
+        <article class="metric">
+          <small>Pending/Partial</small>
+          <strong id="mPending">0</strong>
+        </article>
+        <article class="metric">
+          <small>Collected %</small>
+          <strong id="mCollected">0%</strong>
+        </article>
+        <article class="metric">
+          <small>Commission %</small>
+          <strong id="mCommissionRate">0%</strong>
+        </article>
+        <article class="metric">
+          <small>Projected Commission</small>
+          <strong id="mCommission">0</strong>
+        </article>
+      </section>
+
+      <section class="card">
+        <div class="history-toolbar">
+          <h2>Installment History</h2>
+          <div class="history-toolbar-controls">
+            <input id="historySearch" type="search" placeholder="Search installment or details" aria-label="Search installment history" />
+            <select id="historyStatusFilter" aria-label="Filter installment history status">
+              <option value="all">All Statuses</option>
+              <option value="paid">Paid</option>
+              <option value="pending">Pending</option>
+              <option value="overdue">Overdue</option>
+              <option value="partial">Partial</option>
+            </select>
+            <select id="historySort" aria-label="Sort installment history">
+              <option value="dueDate">Sort by Due Date</option>
+              <option value="amount">Sort by Amount</option>
+              <option value="lateDays">Sort by Late Days</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table aria-label="customer installment details table">
+            <thead>
+              <tr>
+                <th><button type="button" id="historySortId">Installment ID</button></th>
+                <th><button type="button" id="historySortDueDate">Due Date</button></th>
+                <th><button type="button" id="historySortAmount">Amount</button></th>
+                <th>Late Fee</th>
+                <th>Total Payable</th>
+                <th><button type="button" id="historySortStatus">Status</button></th>
+                <th><button type="button" id="historySortLateDays">Late Days</button></th>
+                <th>Commission</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="instBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/installments-history.js"></script>
+</body>
+</html>

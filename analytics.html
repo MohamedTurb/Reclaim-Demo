@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReClaim - Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/theme-overrides.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo-wrap">
+        <h1>ReClaim</h1>
+        <p>Debt Collection System Prototype</p>
+      </div>
+      <nav aria-label="Primary Modules">
+        <ul class="nav-list">
+          <li><a class="nav-link" href="overdue.html">Overdue Customers</a></li>
+          <li><a class="nav-link" href="installments.html">Installment Tracking</a></li>
+          <li><a class="nav-link active" href="analytics.html">Analytics Dashboard</a></li>
+          <li><a class="nav-link" href="installments-history.html">Installment History</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="hero">
+        <h2 id="analysisHeading">Analysis</h2>
+        <p>Employee analysis view for collection periods, bucket counts, values due, values collected, and commission.</p>
+      </header>
+
+      <section class="grid-cards" aria-label="Top metrics">
+        <article class="metric-card">
+          <small>Total Overdue Accounts</small>
+          <strong id="metricOverdueAccounts">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Total Overdue Amount</small>
+          <strong id="metricOverdueAmount">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Payments This Month</small>
+          <strong id="metricPayments">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Avg Days Past Due</small>
+          <strong id="metricAvgDays">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Projected Commission</small>
+          <strong id="metricCommission">0</strong>
+        </article>
+      </section>
+
+      <div class="chart-grid" style="margin-bottom: 16px;">
+        <div class="chart-box">
+          <h4 class="chart-title">Installments Collected vs Due</h4>
+          <canvas id="installmentsChart" aria-label="Installments collection chart" role="img"></canvas>
+        </div>
+        <div class="chart-box">
+          <h4 class="chart-title">Value Collected vs Due</h4>
+          <canvas id="valueChart" aria-label="Value collection chart" role="img"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-grid" style="margin-bottom: 16px;">
+        <div class="chart-box">
+          <h4 class="chart-title">Collection Rate by Period</h4>
+          <canvas id="collectionRateChart" aria-label="Collection rate chart" role="img"></canvas>
+        </div>
+        <div class="chart-box">
+          <h4 class="chart-title">Commission by Period</h4>
+          <canvas id="commissionChart" aria-label="Commission distribution chart" role="img"></canvas>
+        </div>
+      </div>
+
+      <section class="card" aria-labelledby="analysisControlsHeading">
+        <div class="row">
+          <h3 id="analysisControlsHeading">Collection Period Analysis</h3>
+          <div class="controls">
+            <input id="analysisSearch" type="search" placeholder="Search bucket" aria-label="Search analysis buckets" />
+            <select id="analysisSort" aria-label="Sort analysis buckets">
+              <option value="label">Sort by Label</option>
+              <option value="installmentsDue">Sort by Installments Due</option>
+              <option value="valueCollected">Sort by Value Collected</option>
+              <option value="commission">Sort by Compensation</option>
+            </select>
+            <select id="collectionPeriodSelector" aria-label="Select collection period">
+              <option value="2026-04-06_2026-05-05">April 6, 2026 - May 5, 2026</option>
+              <option value="2026-03-06_2026-04-05">March 6, 2026 - April 5, 2026</option>
+              <option value="2026-02-06_2026-03-05">February 6, 2026 - March 5, 2026</option>
+              <option value="2026-01-06_2026-02-05">January 6, 2026 - February 5, 2026</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrap analysis-table-wrap">
+          <table class="bucket-table" aria-label="analysis buckets table">
+            <thead>
+              <tr>
+                <th>Month Due Date</th>
+                <th>Installments Due</th>
+                <th>Installments Collected</th>
+                <th>Installments %</th>
+                <th>Value Due LE</th>
+                <th>Value Collected LE</th>
+                <th>Value %</th>
+                <th>Compensation LE</th>
+              </tr>
+            </thead>
+            <tbody id="analysisBody"></tbody>
+            <tfoot id="analysisFoot"></tfoot>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/analytics.js"></script>
+  <script>
+    window.ReclaimUtils.updateSharedMetrics();
+  </script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE & Editor
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+
+# Node & Package Management
+node_modules/
+npm-debug.log
+npm-debug.log*
+yarn-error.log
+yarn-debug.log
+package-lock.json
+yarn.lock
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build & Distribution
+dist/
+build/
+*.min.js
+*.min.css
+*.map
+
+# Logs
+logs/
+*.log
+
+# Temporary Files
+*.tmp
+*.temp
+~$*
+*.swp
+*.swo
+*~
+
+# Editor backups
+*.backupتر
+*.bak
+
+# Compiled Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Test Coverage
+coverage/
+.nyc_output/
+
+# Database & Local Storage
+*.db
+*.sqlite
+*.sqlite3
+db/
+data/
+
+# API Keys & Secrets
+.secrets
+config/secrets.*
+credentials.json
+
+# Build artifacts
+dist/
+*.tar.gz
+*.zip
+
+# Documentation build
+docs/_build/
+site/
+
+# Cache
+.cache/
+**/cache/
+
+# OS Specific
+.AppleDouble
+.LSOverride
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+.Xauthority
+
+# Project Specific
+# Excel/CSV temp files
+~$*.xlsx
+~$*.xls
+
+# Compiled sites
+_site/
+
+# Backup files
+*.bak
+*.backup
+*.orig
+*.swp
+
+# IDE specific
+.classpath
+.project
+.settings/
+*.sublime-workspace
+*.sublime-project
+.vscode/
+.idea/
+*.iml
+
+# OS layer cache
+.Thumbs.db
+.DS_Store

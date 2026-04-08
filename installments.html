@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReClaim - Installment Tracking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/theme-overrides.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo-wrap">
+        <h1>ReClaim</h1>
+        <p>Debt Collection System Prototype</p>
+      </div>
+      <nav aria-label="Primary Modules">
+        <ul class="nav-list">
+          <li><a class="nav-link" href="overdue.html">Overdue Customers</a></li>
+          <li><a class="nav-link active" href="installments.html">Installment Tracking</a></li>
+          <li><a class="nav-link" href="analytics.html">Analytics Dashboard</a></li>
+          <li><a class="nav-link" href="installments-history.html">Installment History</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="hero">
+        <h2>Installment Tracking</h2>
+        <p>Track installment statuses, inspect details, and mark posted payments from a dedicated page.</p>
+      </header>
+
+      <section class="grid-cards" aria-label="Top metrics">
+        <article class="metric-card">
+          <small>Total Overdue Accounts</small>
+          <strong id="metricOverdueAccounts">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Total Overdue Amount</small>
+          <strong id="metricOverdueAmount">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Payments This Month</small>
+          <strong id="metricPayments">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Avg Days Past Due</small>
+          <strong id="metricAvgDays">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Projected Commission</small>
+          <strong id="metricCommission">0</strong>
+        </article>
+      </section>
+
+      <section class="card" aria-labelledby="installmentHeading">
+        <div class="row">
+          <h3 id="installmentHeading">Installment Ledger</h3>
+          <div class="controls">
+            <input id="installmentSearch" type="search" placeholder="Search customer or ID" aria-label="Search installment rows" />
+            <select id="installmentStatusFilter" aria-label="Filter installment status">
+              <option value="all">All Statuses</option>
+              <option value="paid">Paid</option>
+              <option value="pending">Pending</option>
+              <option value="overdue">Overdue</option>
+              <option value="partial">Partial</option>
+            </select>
+            <button class="btn-primary" id="recalcTotalsBtn">Recalculate Totals</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table aria-label="Installment tracking table">
+            <thead>
+              <tr>
+                <th><button data-sort="customerName">Customer</button></th>
+                <th><button data-sort="dueDate">Due Date</button></th>
+                <th><button data-sort="amount">Amount</button></th>
+                <th>Late Fee</th>
+                <th>Total Payable</th>
+                <th>Commission</th>
+                <th><button data-sort="status">Status</button></th>
+                <th><button data-sort="lateDays">Late Days</button></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="installmentTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="actionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <div class="row modal-header-row">
+        <h3 id="modalTitle">Action</h3>
+        <button id="modalCloseBtn" class="btn-outline" aria-label="Close modal">Close</button>
+      </div>
+      <p id="modalDesc" class="modal-desc"></p>
+      <textarea id="modalComment" placeholder="Add optional comment..."></textarea>
+      <div class="controls controls-end">
+        <button id="modalConfirmBtn" class="btn-primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/installments.js"></script>
+</body>
+</html>
