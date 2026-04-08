@@ -1,6 +1,6 @@
 (() => {
   const { customers } = window.ReclaimData;
-  const { byId, formatCurrency, updateSharedMetrics, getCustomersByAgingBucket } = window.ReclaimUtils;
+  const { byId, formatCurrency, formatPercent, updateSharedMetrics, getCustomersByAgingBucket } = window.ReclaimUtils;
 
   let overdueSort = { key: "daysPastDue", dir: "desc" };
   let modalAction = null;
