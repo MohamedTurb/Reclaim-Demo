@@ -43,7 +43,9 @@
     window.ReclaimErrorHandler?.showNotification?.("Login successful. Redirecting...", "success");
 
     setTimeout(() => {
-      window.location.href = "index.html";
+      const returnTo = sessionStorage.getItem("reclaimReturnTo") || "index.html";
+      sessionStorage.removeItem("reclaimReturnTo");
+      window.location.href = returnTo;
     }, 300);
   });
 })();
