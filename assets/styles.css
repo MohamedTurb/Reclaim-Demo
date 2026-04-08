@@ -881,6 +881,133 @@ th button {
   font-size: 0.85rem;
 }
 
+.login-page {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.login-shell {
+  min-height: 100vh;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: clamp(20px, 5vw, 60px);
+  padding: clamp(20px, 4vw, 42px);
+}
+
+.login-panel {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #d2dfe7;
+  border-radius: 20px;
+  box-shadow: 0 20px 44px rgba(9, 42, 58, 0.14);
+  padding: clamp(18px, 3.2vw, 34px);
+}
+
+.login-eyebrow {
+  margin: 0;
+  color: var(--brand);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.login-panel h1 {
+  margin: 6px 0 8px;
+  font-size: clamp(1.55rem, 3.1vw, 2.25rem);
+  color: var(--brand-2);
+}
+
+.login-copy {
+  margin: 0 0 18px;
+  color: #486071;
+}
+
+.login-form {
+  display: grid;
+  gap: 10px;
+}
+
+.login-form label {
+  font-weight: 600;
+  color: #223845;
+}
+
+.login-form input {
+  width: 100%;
+}
+
+.login-form button {
+  margin-top: 6px;
+}
+
+.login-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0;
+}
+
+.remember-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #365364;
+}
+
+.muted-link {
+  color: var(--brand-2);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.muted-link:hover {
+  text-decoration: underline;
+}
+
+.login-hint {
+  margin: 16px 0 0;
+  color: #4a6170;
+  font-size: 0.9rem;
+}
+
+.login-visual {
+  display: grid;
+}
+
+.visual-card {
+  padding: clamp(18px, 3.6vw, 34px);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.2), transparent 38%),
+    linear-gradient(140deg, #0f766e 0%, #0b4f6c 100%);
+  color: #f2fbff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 22px 45px rgba(11, 79, 108, 0.24);
+}
+
+.visual-card h2 {
+  margin: 0 0 10px;
+  font-size: clamp(1.2rem, 2.3vw, 1.7rem);
+}
+
+.visual-card p {
+  margin: 0;
+  color: #d6edf8;
+  line-height: 1.6;
+}
+
+.visual-card ul {
+  margin: 16px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+
 @media (max-width: 1050px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -904,6 +1031,10 @@ th button {
   }
 
   .quick-links {
+    grid-template-columns: 1fr;
+  }
+
+  .login-shell {
     grid-template-columns: 1fr;
   }
 }
@@ -930,5 +1061,15 @@ th button {
 
   .main {
     padding: 14px;
+  }
+
+  .login-panel,
+  .visual-card {
+    border-radius: 16px;
+  }
+
+  .login-meta {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

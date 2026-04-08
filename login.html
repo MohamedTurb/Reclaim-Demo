@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReClaim - Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/theme-overrides.css" />
+</head>
+<body class="login-page">
+  <main class="login-shell" aria-label="Login page">
+    <section class="login-panel" aria-labelledby="loginTitle">
+      <p class="login-eyebrow">Secure access</p>
+      <h1 id="loginTitle">Welcome to ReClaim</h1>
+      <p class="login-copy">Sign in to continue to your collection command center.</p>
+
+      <form id="loginForm" class="login-form" novalidate>
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" placeholder="you@company.com" required />
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required minlength="8" />
+
+        <div class="login-meta">
+          <label class="remember-row" for="rememberMe">
+            <input id="rememberMe" type="checkbox" />
+            <span>Remember email</span>
+          </label>
+          <a href="index.html" class="muted-link">Skip for demo</a>
+        </div>
+
+        <button class="btn-primary" type="submit">Sign In</button>
+      </form>
+
+      <p class="login-hint">Demo account: <strong>collector@reclaim.com</strong> / <strong>reclaim123</strong></p>
+    </section>
+
+    <section class="login-visual" aria-hidden="true">
+      <div class="visual-card">
+        <h2>Collections at a glance</h2>
+        <p>Overdue recovery, installment health, and performance trends in one focused dashboard.</p>
+        <ul>
+          <li>Track high-risk accounts quickly</li>
+          <li>Review team performance by period</li>
+          <li>Document follow-ups with full history</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/error-handler.js"></script>
+  <script src="assets/login.js"></script>
+</body>
+</html>
