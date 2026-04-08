@@ -280,8 +280,6 @@ const AGE_BUCKET_LABELS = [
   { from: "0000-01-01", label: "January 5, 2026 and older" }
 ];
 
-];
-
 // ============================================
 // الدوال المساعدة الرئيسية
 // MAIN UTILITY FUNCTIONS
