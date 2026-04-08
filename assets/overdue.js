@@ -38,11 +38,11 @@
       .sort((a, b) => b.days - a.days);
 
     notContacted.slice(0, 2).forEach((item) => {
-      window.ReclaimNotifications.warning(`تنبيه: ${item.customer.name} مكلمتوش من ${item.days} أيام`);
+      window.ReclaimNotifications.warning(`Alert: ${item.customer.name} has not been contacted for ${item.days} days`);
     });
 
     if (notContacted.length > 2) {
-      window.ReclaimNotifications.info(`يوجد ${notContacted.length} عميل يحتاج متابعة عاجلة.`);
+      window.ReclaimNotifications.info(`${notContacted.length} customers need urgent follow-up.`);
     }
 
     const paidCustomers = customers.filter((customer) =>
@@ -50,7 +50,7 @@
     );
 
     if (paidCustomers.length) {
-      window.ReclaimNotifications.success(`ممتاز: ${paidCustomers[0].name} عنده دفعات مسجلة.`);
+      window.ReclaimNotifications.success(`Great: ${paidCustomers[0].name} has recorded payments.`);
     }
 
     sessionStorage.setItem(sessionKey, "1");
@@ -226,7 +226,7 @@
           renderAgingBuckets();
           updateSharedMetrics();
           if (window.ReclaimNotifications) {
-            window.ReclaimNotifications.success(`تم إضافة تعليق جديد لـ ${customer.name}`);
+            window.ReclaimNotifications.success(`A new comment was added for ${customer.name}`);
           }
         }
       );

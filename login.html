@@ -17,20 +17,25 @@
       <p class="login-eyebrow">Secure access</p>
       <h1 id="loginTitle">Welcome to ReClaim</h1>
       <p class="login-copy">Sign in to continue to your collection command center.</p>
+      <p id="loginStatus" class="login-status" role="status" aria-live="polite" aria-atomic="true"></p>
 
       <form id="loginForm" class="login-form" novalidate>
-        <label for="email">Email</label>
+        <label for="email">Work email</label>
         <input id="email" name="email" type="email" autocomplete="email" placeholder="you@company.com" required />
 
         <label for="password">Password</label>
-        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required minlength="8" />
+        <div class="password-row">
+          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required minlength="8" aria-describedby="passwordHint" />
+          <button id="passwordToggleBtn" class="password-toggle" type="button" aria-controls="password" aria-pressed="false">Show</button>
+        </div>
+        <p id="passwordHint" class="field-hint">Use the demo credentials or request a reset link.</p>
 
         <div class="login-meta">
           <label class="remember-row" for="rememberMe">
             <input id="rememberMe" type="checkbox" />
             <span>Remember email</span>
           </label>
-          <a href="index.html" class="muted-link">Skip for demo</a>
+          <a id="resetPasswordLink" href="mailto:support@reclaim.com?subject=ReClaim%20Password%20Reset&body=Please%20reset%20my%20ReClaim%20account%20password." class="muted-link">Forgot password?</a>
         </div>
 
         <button class="btn-primary" type="submit">Sign In</button>

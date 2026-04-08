@@ -18,12 +18,12 @@
 
     const paidCount = installments.filter((inst) => inst.status === "paid").length;
     if (paidCount > 0) {
-      window.ReclaimNotifications.info(`إشعار: تم تسجيل ${paidCount} دفعة في النظام.`);
+      window.ReclaimNotifications.info(`Notice: ${paidCount} payments were recorded in the system.`);
     }
 
     const overdueCount = installments.filter((inst) => inst.status === "overdue").length;
     if (overdueCount > 0) {
-      window.ReclaimNotifications.warning(`تنبيه: يوجد ${overdueCount} تقسيط متأخر يحتاج متابعة.`);
+      window.ReclaimNotifications.warning(`Alert: ${overdueCount} overdue installments need follow-up.`);
     }
 
     sessionStorage.setItem(sessionKey, "1");
@@ -172,7 +172,7 @@
           renderInstallments();
           updateSharedMetrics();
           if (window.ReclaimNotifications) {
-            window.ReclaimNotifications.success(`تم الدفع: ${inst.customerName} - ${inst.id}`);
+            window.ReclaimNotifications.success(`Payment posted: ${inst.customerName} - ${inst.id}`);
           }
         }
       );

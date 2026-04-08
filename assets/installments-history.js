@@ -227,7 +227,7 @@
     const comment = byId("activityComment").value.trim();
     if (!comment) {
       if (window.ReclaimNotifications) {
-        window.ReclaimNotifications.warning("اكتب تعليق قبل الحفظ");
+        window.ReclaimNotifications.warning("Write a comment before saving");
       }
       return;
     }
@@ -249,7 +249,7 @@
     byId("activityComment").value = "";
     renderActivity();
     if (window.ReclaimNotifications) {
-      window.ReclaimNotifications.success(`تم إضافة تعليق جديد لـ ${customer.name}`);
+      window.ReclaimNotifications.success(`A new comment was added for ${customer.name}`);
     }
   }
 

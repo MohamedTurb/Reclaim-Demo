@@ -92,6 +92,8 @@ h4 {
   display: block;
   text-decoration: none;
   width: 100%;
+  appearance: none;
+  border: 0;
   background: rgba(255, 255, 255, 0.08);
   color: #e7f4fb;
   padding: 12px 14px;
@@ -105,6 +107,15 @@ h4 {
 .nav-link.active {
   background: rgba(255, 255, 255, 0.2);
   transform: translateX(3px);
+}
+
+.nav-link:focus-visible,
+.nav-btn:focus-visible,
+.password-toggle:focus-visible,
+.muted-link:focus-visible,
+.nav-logout:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.75);
+  outline-offset: 2px;
 }
 
 .main {
@@ -935,6 +946,41 @@ th button {
   color: #223845;
 }
 
+.password-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.password-toggle {
+  min-width: 88px;
+  background: #f1f7fa;
+  border: 1px solid #c9d5dd;
+  color: var(--brand-2);
+}
+
+.field-hint {
+  margin: -2px 0 0;
+  color: #607482;
+  font-size: 0.86rem;
+}
+
+.login-status {
+  margin: 0 0 16px;
+  min-height: 1.25em;
+  font-size: 0.95rem;
+  color: #32586a;
+}
+
+.login-status[data-tone="error"] {
+  color: var(--danger);
+}
+
+.login-status[data-tone="success"] {
+  color: var(--ok);
+}
+
 .login-form input {
   width: 100%;
 }
@@ -979,6 +1025,19 @@ th button {
   display: grid;
 }
 
+.nav-logout {
+  margin-top: 2px;
+  color: #ffd6d6;
+}
+
+.nav-logout:hover {
+  background: rgba(225, 29, 72, 0.22);
+}
+
+.nav-logout::before {
+  background: rgba(255, 214, 214, 0.8);
+}
+
 .visual-card {
   padding: clamp(18px, 3.6vw, 34px);
   border-radius: 24px;
@@ -1016,6 +1075,7 @@ th button {
   .sidebar {
     position: static;
     height: auto;
+    padding: 20px 16px;
   }
 
   .layout,
@@ -1036,6 +1096,7 @@ th button {
 
   .login-shell {
     grid-template-columns: 1fr;
+    min-height: auto;
   }
 }
 
@@ -1071,5 +1132,27 @@ th button {
   .login-meta {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .password-row {
+    grid-template-columns: 1fr;
+  }
+
+  .password-toggle {
+    width: 100%;
+  }
+
+  .nav-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nav-link,
+  .nav-btn {
+    min-height: 48px;
+    white-space: normal;
+  }
+
+  .login-visual {
+    display: none;
   }
 }
