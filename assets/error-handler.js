@@ -298,32 +298,32 @@ window.ReclaimValidation = {
     const errors = [];
 
     if (!customer) {
-      errors.push("العميل غير موجود");
+      errors.push("Customer not found");
       return errors;
     }
 
     if (!customer.id || typeof customer.id !== "string") {
-      errors.push("معرف العميل مفقود أو غير صحيح");
+      errors.push("Customer ID is missing or invalid");
     }
 
     if (!customer.name || customer.name.trim().length === 0) {
-      errors.push("اسم العميل مفقود");
+      errors.push("Customer name is missing");
     }
 
     if (!customer.contact || customer.contact.trim().length === 0) {
-      errors.push("رقم الهاتف مفقود");
+      errors.push("Phone number is missing");
     }
 
     if (customer.overdueAmount === undefined || customer.overdueAmount < 0) {
-      errors.push("المبلغ المستحق غير صحيح");
+      errors.push("Overdue amount is invalid");
     }
 
     if (typeof customer.daysPastDue !== "number" || customer.daysPastDue < 0) {
-      errors.push("أيام التأخير غير صحيحة");
+      errors.push("Days past due is invalid");
     }
 
     if (!["high", "medium", "low"].includes(customer.priority)) {
-      errors.push("درجة الأولوية غير صحيحة");
+      errors.push("Priority level is invalid");
     }
 
     return errors;
@@ -337,32 +337,32 @@ window.ReclaimValidation = {
     const errors = [];
 
     if (!installment) {
-      errors.push("التقسيط غير موجود");
+      errors.push("Installment not found");
       return errors;
     }
 
     if (!installment.id || typeof installment.id !== "string") {
-      errors.push("معرف التقسيط مفقود");
+      errors.push("Installment ID is missing");
     }
 
     if (!installment.customerId || typeof installment.customerId !== "string") {
-      errors.push("معرف العميل مفقود");
+      errors.push("Customer ID is missing");
     }
 
     if (!installment.dueDate || !this.isValidDate(installment.dueDate)) {
-      errors.push("تاريخ الاستحقاق غير صحيح");
+      errors.push("Due date is invalid");
     }
 
     if (typeof installment.amount !== "number" || installment.amount <= 0) {
-      errors.push("المبلغ يجب أن يكون أكبر من صفر");
+      errors.push("Amount must be greater than zero");
     }
 
     if (typeof installment.lateFee !== "number" || installment.lateFee < 0) {
-      errors.push("رسم التأخير غير صحيح");
+      errors.push("Late fee is invalid");
     }
 
     if (!["paid", "pending", "overdue", "partial"].includes(installment.status)) {
-      errors.push("حالة التقسيط غير صحيحة");
+      errors.push("Installment status is invalid");
     }
 
     return errors;
@@ -417,10 +417,10 @@ window.ReclaimErrorHandler = {
    * معالجة الخطأ وعرض رسالة للمستخدم
    * Handle error and show to user
    */
-  handle(error, context = "عملية") {
+  handle(error, context = "Operation") {
     console.error(`[${context}]`, error);
 
-    let message = "حدث خطأ ما. يرجى المحاولة مجدداً.";
+    let message = "Something went wrong. Please try again.";
 
     if (typeof error === "string") {
       message = error;
@@ -436,7 +436,7 @@ window.ReclaimErrorHandler = {
    * معالجة آمنة لدالة معينة
    * Safe wrapper for a function
    */
-  wrap(fn, errorContext = "العملية") {
+  wrap(fn, errorContext = "Operation") {
     return (...args) => {
       try {
         return fn(...args);
@@ -451,7 +451,7 @@ window.ReclaimErrorHandler = {
    * معالجة آمنة لدالة غير متزامنة
    * Safe wrapper for async function
    */
-  wrapAsync(fn, errorContext = "العملية") {
+  wrapAsync(fn, errorContext = "Operation") {
     return async (...args) => {
       try {
         return await fn(...args);
@@ -623,7 +623,7 @@ window.addEventListener("error", (event) => {
   const key = `error:${event?.message || "unknown"}:${event?.filename || ""}:${event?.lineno || 0}`;
   const now = Date.now();
   if (shouldShowGlobalToast(key, now)) {
-    window.ReclaimNotifications.error("حدث خطأ غير متوقع");
+    window.ReclaimNotifications.error("An unexpected error occurred");
   }
 });
 
@@ -639,6 +639,6 @@ window.addEventListener("unhandledrejection", (event) => {
   const now = Date.now();
 
   if (shouldShowGlobalToast(key, now)) {
-    window.ReclaimNotifications.error("حدث خطأ في العملية");
+    window.ReclaimNotifications.error("An operation error occurred");
   }
 });

@@ -27,8 +27,8 @@
   
   // التحقق من توفر البيانات الأساسية
   if (!window.ReclaimData || !window.ReclaimUtils) {
-    console.error("ReclaimData و ReclaimUtils غير متوفرة");
-    window.ReclaimNotifications?.error("فشل في تحميل البيانات الأساسية");
+    console.error("ReclaimData and ReclaimUtils are unavailable");
+    window.ReclaimNotifications?.error("Failed to load core data");
     return;
   }
 
@@ -121,7 +121,7 @@
       modules.forEach((module) => {
         module.classList.toggle("active", module.id === btn.dataset.target);
       });
-    }, "التنقل بين الوحدات"));
+    }, "Module navigation"));
   });
 
   // ============================================
@@ -135,7 +135,7 @@
       const tableBodyEl = byId("overdueTableBody");
 
       if (!searchEl || !filterEl || !tableBodyEl) {
-        handleError("عناصر واجهة المستخدم مفقودة", "عرض الجدول");
+        handleError("UI elements are missing", "Render table");
         return;
       }
 
@@ -149,7 +149,7 @@
             // التحقق من صحة العميل
             const errors = validateCustomer(c);
             if (errors.length > 0) {
-              console.warn(`عميل به أخطاء (${c.id}):`, errors);
+              console.warn(`Customer has validation errors (${c.id}):`, errors);
               return false;
             }
 
@@ -165,7 +165,7 @@
             const matchesPriority = priority === "all" || c.priority === priority;
             return matchesQuery && matchesPriority;
           } catch (error) {
-            console.warn("خطأ في تصفية العميل:", error);
+            console.warn("Error filtering customer:", error);
             return false;
           }
         })
@@ -176,7 +176,7 @@
             const bVal = b[overdueSort.key] || 0;
             return (aVal - bVal) * factor;
           } catch (error) {
-            console.warn("خطأ في الترتيب:", error);
+            console.warn("Sorting error:", error);
             return 0;
           }
         });
@@ -206,7 +206,7 @@
               <td>${contact}<br /><small style="color:var(--muted)">${email}</small></td>
               <td>
                 <strong>${formatCurrency(c.overdueAmount || 0)}</strong><br />
-                <small style="color:var(--muted)">${c.daysPastDue || 0} أيام متأخرة</small>
+                <small style="color:var(--muted)">${c.daysPastDue || 0} days overdue</small>
               </td>
               <td>
                 <ul class="activity-preview">
@@ -216,22 +216,22 @@
               <td><span class="pill priority-${c.priority || 'low'}">${(c.priority || 'low').toUpperCase()}</span></td>
               <td>
                 <div class="controls">
-                  <button class="btn-warning" data-action="followup" data-id="${safeId}">متابعة</button>
+                  <button class="btn-warning" data-action="followup" data-id="${safeId}">Follow-up</button>
                 </div>
               </td>
             </tr>
           `;
           } catch (error) {
-            console.warn("خطأ في عرض صف:", error);
+            console.warn("Error rendering row:", error);
             return "";
           }
         })
         .filter(Boolean)
         .join("");
     } catch (error) {
-      handleError(error, "عرض جدول المتخلفين");
+      handleError(error, "Render overdue table");
     }
-  }, "عرض جدول المتخلفين");
+  }, "Render overdue table");
 
   // ============================================
   // عرض جدول التقسيطات
@@ -243,7 +243,7 @@
       const tableBodyEl = byId("installmentTableBody");
 
       if (!filterEl || !tableBodyEl) {
-        handleError("عناصر الجدول مفقودة", "عرض التقسيطات");
+        handleError("Table elements are missing", "Render installments");
         return;
       }
 
@@ -255,12 +255,12 @@
             // التحقق من صحة التقسيط
             const errors = validateInstallment(inst);
             if (errors.length > 0) {
-              console.warn(`تقسيط به أخطاء (${inst.id}):`, errors);
+              console.warn(`Installment has validation errors (${inst.id}):`, errors);
               return false;
             }
             return statusFilter === "all" || inst.status === statusFilter;
           } catch (error) {
-            console.warn("خطأ في تصفية التقسيط:", error);
+            console.warn("Error filtering installment:", error);
             return false;
           }
         })
@@ -283,14 +283,14 @@
                 <td>${inst.lateDays || 0}</td>
                 <td>
                   <div class="controls">
-                    <button class="btn-outline" data-action="expandInst" data-inst-id="${safeInstId}">التفاصيل</button>
-                    <button class="btn-primary" data-action="markInstPaid" data-inst-id="${safeInstId}">تسجيل الدفع</button>
+                    <button class="btn-outline" data-action="expandInst" data-inst-id="${safeInstId}">Details</button>
+                    <button class="btn-primary" data-action="markInstPaid" data-inst-id="${safeInstId}">Post Payment</button>
                   </div>
                 </td>
               </tr>
             `;
           } catch (error) {
-            console.warn("خطأ في عرض صف التقسيط:", error);
+            console.warn("Error rendering installment row:", error);
             return "";
           }
         })
@@ -299,9 +299,9 @@
 
       tableBodyEl.innerHTML = rows;
     } catch (error) {
-      handleError(error, "عرض جدول التقسيطات");
+      handleError(error, "Render installments table");
     }
-  }, "عرض جدول التقسيطات");
+  }, "Render installments table");
 
   // ============================================
   // إدارة النافذة المنبثقة
@@ -321,20 +321,20 @@
       const actionModalEl = byId("actionModal");
 
       if (!modalTitleEl || !modalDescEl || !modalConfirmBtnEl || !modalCommentEl || !actionModalEl) {
-        handleError("عناصر النافذة المنبثقة مفقودة", "فتح النافذة");
+        handleError("Modal elements are missing", "Open modal");
         return;
       }
 
       modalTitleEl.textContent = String(title || "");
       modalDescEl.textContent = String(description || "");
-      modalConfirmBtnEl.textContent = String(confirmText || "تأكيد");
+      modalConfirmBtnEl.textContent = String(confirmText || "Confirm");
       modalCommentEl.value = "";
       actionModalEl.classList.add("open");
       modalAction = typeof actionFn === "function" ? actionFn : null;
     } catch (error) {
-      handleError(error, "فتح النافذة المنبثقة");
+      handleError(error, "Open modal dialog");
     }
-  }, "فتح النافذة");
+  }, "Open modal");
 
   /**
    * إغلاق النافذة المنبثقة
@@ -348,9 +348,9 @@
       }
       modalAction = null;
     } catch (error) {
-      handleError(error, "إغلاق النافذة");
+      handleError(error, "Close modal");
     }
-  }, "إغلاق النافذة");
+  }, "Close modal");
 
   // ============================================
   // الرسوم البيانية مع معالجة الأخطاء
@@ -364,7 +364,7 @@
   const buildCharts = wrapErrorHandler(function() {
     try {
       if (!analytics || !analytics.monthly) {
-        console.warn("بيانات التحليلات غير متوفرة");
+        console.warn("Analytics data is unavailable");
         return;
       }
 
@@ -372,7 +372,7 @@
       const ctx2 = byId("bucketChart")?.getContext("2d");
 
       if (!ctx1 || !ctx2 || typeof Chart === "undefined") {
-        console.warn("عناصر الرسوم البيانية غير متوفرة أو Chart.js غير محمل");
+        console.warn("Chart elements are unavailable or Chart.js is not loaded");
         return;
       }
 
@@ -384,7 +384,7 @@
         data: {
           labels: defaultData.labels || [],
           datasets: [{
-            label: "المبلغ المحصل (EGP)",
+            label: "Collected Amount (EGP)",
             data: defaultData.collected || [],
             backgroundColor: ["#0f766e", "#14b8a6", "#0b4f6c", "#2a9d8f"],
             borderRadius: 8
@@ -402,7 +402,7 @@
       bucketChart = new Chart(ctx2, {
         type: "doughnut",
         data: {
-          labels: ["0-15 يوم", "16-30 يوم", "31-45 يوم", ">45 يوم"],
+          labels: ["0-15 days", "16-30 days", "31-45 days", ">45 days"],
           datasets: [{
             data: defaultData.bucket || [],
             backgroundColor: ["#16a34a", "#f59e0b", "#f97316", "#e11d48"],
@@ -417,9 +417,9 @@
         }
       });
     } catch (error) {
-      handleError(error, "بناء الرسوم البيانية");
+      handleError(error, "Build charts");
     }
-  }, "بناء الرسوم البيانية");
+  }, "Build charts");
 
   /**
    * تحديث الرسوم البيانية بناءً على النطاق الزمني
@@ -428,7 +428,7 @@
   const updateCharts = wrapErrorHandler(function(range) {
     try {
       if (!analytics || !analytics[range]) {
-        handleError("البيانات غير متوفرة للنطاق المحدد", "تحديث الرسوم البيانية");
+        handleError("No data available for the selected range", "Update charts");
         return;
       }
 
@@ -449,9 +449,9 @@
         bucketChart.update();
       }
     } catch (error) {
-      handleError(error, "تحديث الرسوم البيانية");
+      handleError(error, "Update charts");
     }
-  }, "تحديث الرسوم البيانية");
+  }, "Update charts");
 
   // ============================================
   // معالجات الأحداث
@@ -475,7 +475,7 @@
         overdueSort = { key, dir: "desc" };
       }
       renderOverdueTable();
-    }, "الترتيب"));
+    }, "Sorting"));
   });
 
   // إعادة حساب الإجمالي
@@ -486,13 +486,13 @@
           inst.lateFee = Math.max(inst.lateFee || 0, Math.round((inst.amount || 0) * 0.1));
         }
       } catch (error) {
-        console.warn("خطأ في إعادة حساب الرسوم:", error);
+        console.warn("Error recalculating fees:", error);
       }
     });
     renderInstallments();
     updateSharedMetrics?.();
-    window.ReclaimNotifications.success("تم إعادة حساب الرسوم بنجاح");
-  }, "إعادة حساب الرسوم"));
+    window.ReclaimNotifications.success("Fees recalculated successfully");
+  }, "Recalculate fees"));
 
   // إدارة النافذة المنبثقة
   byId("modalCloseBtn")?.addEventListener("click", closeModal);
@@ -505,7 +505,7 @@
       modalAction(comment);
     }
     closeModal();
-  }, "تأكيد الإجراء"));
+  }, "Confirm action"));
 
   // ============================================
   // معالجة الإجراءات
@@ -523,86 +523,86 @@
     if (action === "followup") {
       wrapErrorHandler(() => {
         if (!customerId) {
-          handleError("معرف العميل مفقود", "جدولة المتابعة");
+          handleError("Customer ID is missing", "Schedule follow-up");
           return;
         }
 
         const customer = (customers || []).find((c) => c.id === customerId);
         if (!customer) {
-          handleError("العميل غير موجود", "جدولة المتابعة");
+          handleError("Customer not found", "Schedule follow-up");
           return;
         }
 
         openModal(
-          `جدولة المتابعة - ${customer.name}`,
-          `سجل تحديث متابعة لـ ${customer.name}.`,
-          "حفظ المتابعة",
+          `Schedule Follow-up - ${customer.name}`,
+          `Record a follow-up update for ${customer.name}.`,
+          "Save Follow-up",
           (comment) => {
             try {
-              customer.latestComments = comment || "تم تسجيل المتابعة بواسطة الوكيل.";
+              customer.latestComments = comment || "Follow-up logged by agent.";
               if (!customer.activity) customer.activity = [];
               customer.activity.unshift({
-                title: "تم تسجيل المتابعة",
+                title: "Follow-up Logged",
                 detail: customer.latestComments,
                 date: new Date().toISOString().split("T")[0]
               });
               renderOverdueTable();
               updateSharedMetrics?.();
-              window.ReclaimNotifications.success("تم حفظ المتابعة بنجاح");
+              window.ReclaimNotifications.success("Follow-up saved successfully");
             } catch (error) {
-              handleError(error, "حفظ المتابعة");
+              handleError(error, "Save follow-up");
             }
           }
         );
-      }, "جدولة المتابعة")();
+      }, "Schedule follow-up")();
     }
 
     // إجراء: عرض تفاصيل التقسيط
     if (action === "expandInst") {
       wrapErrorHandler(() => {
         if (!instId) {
-          handleError("معرف التقسيط مفقود", "عرض التفاصيل");
+          handleError("Installment ID is missing", "View details");
           return;
         }
 
         const inst = (installments || []).find((i) => i.id === instId);
         if (!inst) {
-          handleError("التقسيط غير موجود", "عرض التفاصيل");
+          handleError("Installment not found", "View details");
           return;
         }
 
         const errors = validateInstallment(inst);
         if (errors.length > 0) {
-          console.warn("تحذيرات في بيانات التقسيط:", errors);
+          console.warn("Installment data warnings:", errors);
         }
 
         openModal(
-          `التقسيط ${inst.id}`,
-          `${inst.customerName} | الاستحقاق ${inst.dueDate} | الحالة ${(inst.status || "PENDING").toUpperCase()}`,
-          "إغلاق",
+          `Installment ${inst.id}`,
+          `${inst.customerName} | Due ${inst.dueDate} | Status ${(inst.status || "PENDING").toUpperCase()}`,
+          "Close",
           null
         );
-      }, "عرض تفاصيل التقسيط")();
+      }, "View installment details")();
     }
 
     // إجراء: تسجيل دفع
     if (action === "markInstPaid") {
       wrapErrorHandler(() => {
         if (!instId) {
-          handleError("معرف التقسيط مفقود", "تسجيل الدفع");
+          handleError("Installment ID is missing", "Post payment");
           return;
         }
 
         const inst = (installments || []).find((i) => i.id === instId);
         if (!inst) {
-          handleError("التقسيط غير موجود", "تسجيل الدفع");
+          handleError("Installment not found", "Post payment");
           return;
         }
 
         openModal(
-          "تسجيل دفع التقسيط",
-          `تأكيد تسجيل الدفع لـ ${inst.id} (${inst.customerName}).`,
-          "تسجيل الدفع",
+          "Post Installment Payment",
+          `Confirm payment posting for ${inst.id} (${inst.customerName}).`,
+          "Post Payment",
           (comment) => {
             try {
               inst.status = "paid";
@@ -616,21 +616,21 @@
                 
                 if (!customer.activity) customer.activity = [];
                 customer.activity.unshift({
-                  title: "تم دفع التقسيط",
-                  detail: comment || `تم تسجيل التقسيط ${inst.id} كمدفوع.`,
+                  title: "Installment Paid",
+                  detail: comment || `Installment ${inst.id} posted as paid.`,
                   date: new Date().toISOString().split("T")[0]
                 });
               }
 
               renderInstallments();
               updateSharedMetrics?.();
-              window.ReclaimNotifications.success("تم تسجيل الدفع بنجاح");
+              window.ReclaimNotifications.success("Payment posted successfully");
             } catch (error) {
-              handleError(error, "تسجيل الدفع");
+              handleError(error, "Post payment");
             }
           }
         );
-      }, "تسجيل دفع التقسيط")();
+      }, "Post installment payment")();
     }
   });
 
@@ -641,7 +641,7 @@
   byId("rangeSelector")?.addEventListener("change", wrapErrorHandler((e) => {
     currentRange = e.target?.value || "monthly";
     updateCharts(currentRange);
-  }, "تغيير النطاق الزمني"));
+  }, "Change time range"));
 
   byId("shuffleDataBtn")?.addEventListener("click", wrapErrorHandler(() => {
     const data = analytics?.[currentRange];
@@ -655,11 +655,11 @@
         data.bucket = data.bucket.map((v) => Math.max(1, Math.round(v * (0.85 + Math.random() * 0.35))));
       }
       updateCharts(currentRange);
-      window.ReclaimNotifications.info("تم تحديث البيانات التجريبية");
+      window.ReclaimNotifications.info("Demo data updated");
     } catch (error) {
-      handleError(error, "تحديث البيانات");
+      handleError(error, "Update data");
     }
-  }, "تحديث البيانات"));
+  }, "Update data"));
 
   // ============================================
   // التهيئة الأولية
@@ -670,9 +670,9 @@
     renderInstallments();
     updateSharedMetrics?.();
     buildCharts();
-    window.ReclaimNotifications.success("تم تحميل لوحة المراقبة بنجاح");
+    window.ReclaimNotifications.success("Dashboard loaded successfully");
   } catch (error) {
-    handleError(error, "التهيئة الأولية");
+    handleError(error, "Initial setup");
   }
 })();
 
