@@ -1,9 +1,60 @@
 (() => {
-  const { customers } = window.ReclaimData;
+  const { customers, installments } = window.ReclaimData;
   const { byId, formatCurrency, formatPercent, updateSharedMetrics, getCustomersByAgingBucket } = window.ReclaimUtils;
 
   let overdueSort = { key: "daysPastDue", dir: "desc" };
   let modalAction = null;
+
+  function dateDiffInDays(fromDate, toDate) {
+    const start = new Date(`${fromDate}T00:00:00`);
+    const end = new Date(`${toDate}T00:00:00`);
+    const diff = end - start;
+    return Math.floor(diff / (1000 * 60 * 60 * 24));
+  }
+
+  function getTodayDate() {
+    return "2026-04-08";
+  }
+
+  function showSmartAlerts() {
+    if (!window.ReclaimNotifications) return;
+
+    const today = getTodayDate();
+    const sessionKey = `reclaim.overdue.alerts.${today}`;
+    if (sessionStorage.getItem(sessionKey)) return;
+
+    const notContacted = customers
+      .map((customer) => {
+        const lastActivityDate = (customer.activity || [])
+          .map((item) => item.date)
+          .filter(Boolean)
+          .sort()
+          .slice(-1)[0];
+
+        if (!lastActivityDate) return { customer, days: 999 };
+        return { customer, days: dateDiffInDays(lastActivityDate, today) };
+      })
+      .filter((item) => item.days >= 3)
+      .sort((a, b) => b.days - a.days);
+
+    notContacted.slice(0, 2).forEach((item) => {
+      window.ReclaimNotifications.warning(`تنبيه: ${item.customer.name} مكلمتوش من ${item.days} أيام`);
+    });
+
+    if (notContacted.length > 2) {
+      window.ReclaimNotifications.info(`يوجد ${notContacted.length} عميل يحتاج متابعة عاجلة.`);
+    }
+
+    const paidCustomers = customers.filter((customer) =>
+      installments.some((inst) => inst.customerId === customer.id && inst.status === "paid")
+    );
+
+    if (paidCustomers.length) {
+      window.ReclaimNotifications.success(`ممتاز: ${paidCustomers[0].name} عنده دفعات مسجلة.`);
+    }
+
+    sessionStorage.setItem(sessionKey, "1");
+  }
 
   function getAvatarUrl(customer) {
     if (customer.photo) return customer.photo;
@@ -78,9 +129,12 @@
   }
 
   function renderAgingBuckets() {
+    const agingBucketsEl = byId("agingBuckets");
+    if (!agingBucketsEl) return;
+
     const buckets = getCustomersByAgingBucket();
 
-    byId("agingBuckets").innerHTML = buckets
+    agingBucketsEl.innerHTML = buckets
       .map((bucket) => {
         const bucketTotalCommission = bucket.customers.reduce((sum, entry) => sum + entry.summary.commissionAmount, 0);
         const bucketTotalCollected = bucket.customers.reduce((sum, entry) => sum + entry.summary.collectedAmount, 0);
@@ -171,6 +225,9 @@
           renderOverdueTable();
           renderAgingBuckets();
           updateSharedMetrics();
+          if (window.ReclaimNotifications) {
+            window.ReclaimNotifications.success(`تم إضافة تعليق جديد لـ ${customer.name}`);
+          }
         }
       );
     }
@@ -179,4 +236,5 @@
   renderOverdueTable();
   renderAgingBuckets();
   updateSharedMetrics();
+  showSmartAlerts();
 })();

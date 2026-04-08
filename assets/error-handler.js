@@ -14,9 +14,15 @@
 // ============================================
 // نظام الإشعارات | NOTIFICATION SYSTEM
 // ============================================
+const RECLAIM_NOTIFICATION_LOG_KEY = "reclaim.notifications.log.v1";
+const RECLAIM_NOTIFICATION_SEEN_AT_KEY = "reclaim.notifications.seenAt";
+
 window.ReclaimNotifications = {
   // حاوية الإشعارات
   container: null,
+  centerPanel: null,
+  centerList: null,
+  centerBadge: null,
 
   /**
    * تهيئة نظام الإشعارات
@@ -39,6 +45,169 @@ window.ReclaimNotifications = {
     } else {
       this.container = document.getElementById("notificationContainer");
     }
+
+    this.initCenter();
+  },
+
+  getLogs() {
+    try {
+      return JSON.parse(localStorage.getItem(RECLAIM_NOTIFICATION_LOG_KEY) || "[]");
+    } catch (_) {
+      return [];
+    }
+  },
+
+  saveLogs(logs) {
+    localStorage.setItem(RECLAIM_NOTIFICATION_LOG_KEY, JSON.stringify(logs.slice(-250)));
+  },
+
+  pushLog(message, type) {
+    const logs = this.getLogs();
+    logs.push({
+      id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+      type,
+      message: String(message || ""),
+      at: new Date().toISOString()
+    });
+    this.saveLogs(logs);
+  },
+
+  getSeenAt() {
+    return Number(localStorage.getItem(RECLAIM_NOTIFICATION_SEEN_AT_KEY) || 0);
+  },
+
+  markSeenNow() {
+    localStorage.setItem(RECLAIM_NOTIFICATION_SEEN_AT_KEY, String(Date.now()));
+  },
+
+  getUnreadCount() {
+    const seenAt = this.getSeenAt();
+    return this.getLogs().filter((item) => new Date(item.at).getTime() > seenAt).length;
+  },
+
+  refreshCenterBadge() {
+    if (!this.centerBadge) return;
+    const unread = this.getUnreadCount();
+    this.centerBadge.textContent = unread > 99 ? "99+" : String(unread);
+    this.centerBadge.style.display = unread ? "inline-flex" : "none";
+  },
+
+  renderCenterList() {
+    if (!this.centerList) return;
+
+    const logs = this.getLogs().slice().reverse();
+    if (!logs.length) {
+      this.centerList.innerHTML = '<p style="margin:0;color:#6a7780;">No notifications yet.</p>';
+      return;
+    }
+
+    this.centerList.innerHTML = logs
+      .map((item) => {
+        const tone = item.type === "success"
+          ? "#047857"
+          : item.type === "error"
+            ? "#b91c1c"
+            : item.type === "warning"
+              ? "#b45309"
+              : "#1d4ed8";
+        return `
+          <article style="border:1px solid #e2e8f0;border-radius:8px;padding:8px;background:#fff;">
+            <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:4px;">
+              <strong style="font-size:0.84rem;color:${tone};text-transform:uppercase;">${item.type}</strong>
+              <small style="color:#6a7780;">${new Date(item.at).toLocaleString()}</small>
+            </div>
+            <div style="color:#1e2a2f;line-height:1.45;">${item.message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+          </article>
+        `;
+      })
+      .join("");
+  },
+
+  openCenter() {
+    if (!this.centerPanel) return;
+    this.renderCenterList();
+    this.centerPanel.style.display = "block";
+    this.markSeenNow();
+    this.refreshCenterBadge();
+  },
+
+  closeCenter() {
+    if (!this.centerPanel) return;
+    this.centerPanel.style.display = "none";
+  },
+
+  clearCenter() {
+    this.saveLogs([]);
+    this.renderCenterList();
+    this.refreshCenterBadge();
+  },
+
+  initCenter() {
+    const self = this;
+
+    if (!this.centerPanel) {
+      const panel = document.createElement("div");
+      panel.id = "notificationCenterPanel";
+      panel.style.cssText = `
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        width: min(460px, 94vw);
+        max-height: 72vh;
+        border: 1px solid #d7e2e8;
+        border-radius: 12px;
+        background: #f8fbfe;
+        box-shadow: 0 22px 45px rgba(9, 42, 58, 0.24);
+        z-index: 10010;
+        display: none;
+      `;
+      panel.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid #dbe6ec;background:#fff;border-radius:12px 12px 0 0;">
+          <h3 style="margin:0;font-size:1rem;color:#0b4f6c;">Notifications</h3>
+          <div style="display:flex;gap:8px;">
+            <button id="notificationCenterClearBtn" class="btn-outline" type="button">Clear</button>
+            <button id="notificationCenterCloseBtn" class="btn-outline" type="button">Close</button>
+          </div>
+        </div>
+        <div id="notificationCenterList" style="display:grid;gap:8px;padding:10px;overflow:auto;max-height:calc(72vh - 60px);"></div>
+      `;
+
+      document.body.appendChild(panel);
+      this.centerPanel = panel;
+      this.centerList = panel.querySelector("#notificationCenterList");
+
+      panel.querySelector("#notificationCenterCloseBtn").addEventListener("click", () => self.closeCenter());
+      panel.querySelector("#notificationCenterClearBtn").addEventListener("click", () => self.clearCenter());
+    }
+
+    if (!document.getElementById("sidebarNotificationBtn")) {
+      const sidebar = document.querySelector(".sidebar");
+      if (sidebar) {
+        const wrap = document.createElement("div");
+        wrap.id = "sidebarNotificationWrap";
+        wrap.style.cssText = "display:flex;justify-content:flex-end;margin-bottom:8px;";
+        wrap.innerHTML = `
+          <button id="sidebarNotificationBtn" type="button" aria-label="Notifications" title="Notifications" style="position:relative;border:0;background:transparent;color:#ecf8ff;cursor:pointer;font-size:1.35rem;line-height:1;padding:4px 6px;">
+            &#128276;
+            <span id="sidebarNotificationBadge" style="display:none;position:absolute;right:-4px;top:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#ef4444;color:#fff;font-size:0.72rem;font-weight:700;align-items:center;justify-content:center;"></span>
+          </button>
+        `;
+
+        const logoWrap = sidebar.querySelector(".logo-wrap");
+        if (logoWrap) {
+          logoWrap.insertAdjacentElement("afterend", wrap);
+        } else {
+          sidebar.prepend(wrap);
+        }
+
+        this.centerBadge = wrap.querySelector("#sidebarNotificationBadge");
+        wrap.querySelector("#sidebarNotificationBtn").addEventListener("click", () => self.openCenter());
+      }
+    } else if (!this.centerBadge) {
+      this.centerBadge = document.getElementById("sidebarNotificationBadge");
+    }
+
+    this.refreshCenterBadge();
   },
 
   /**
@@ -79,6 +248,10 @@ window.ReclaimNotifications = {
    */
   show(message, type = "info", duration = 3000) {
     if (!this.container) this.init();
+
+    this.pushLog(message, type);
+    this.refreshCenterBadge();
+    this.renderCenterList();
 
     const notification = document.createElement("div");
     const colors = {
@@ -397,14 +570,75 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // معالج عام لأخطاء JavaScript
 // Global error handler
+const __reclaimGlobalErrorState = {
+  lastToastAt: 0,
+  shownKeys: new Map()
+};
+
+function shouldIgnoreGlobalError(event) {
+  // Resource loading errors are often non-critical (img/font/script from third-party)
+  if (event && !event.error && event.target && event.target !== window) {
+    return true;
+  }
+
+  const message = String(event?.message || "").toLowerCase();
+
+  // Ignore noisy browser/extension related runtime errors
+  if (
+    message.includes("resizeobserver") ||
+    message.includes("chrome-extension") ||
+    message.includes("script error")
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+function shouldShowGlobalToast(key, now) {
+  const minGapMs = 2500;
+  if (now - __reclaimGlobalErrorState.lastToastAt < minGapMs) {
+    return false;
+  }
+
+  const lastShownForKey = __reclaimGlobalErrorState.shownKeys.get(key) || 0;
+  // Same error key should not be shown repeatedly in short period
+  if (now - lastShownForKey < 30000) {
+    return false;
+  }
+
+  __reclaimGlobalErrorState.lastToastAt = now;
+  __reclaimGlobalErrorState.shownKeys.set(key, now);
+  return true;
+}
+
 window.addEventListener("error", (event) => {
-  console.error("Global error:", event.error);
-  window.ReclaimNotifications.error("حدث خطأ غير متوقع");
+  if (shouldIgnoreGlobalError(event)) {
+    console.warn("Ignored global error:", event?.message || event?.target?.src || event);
+    return;
+  }
+
+  console.error("Global error:", event.error || event.message || event);
+
+  const key = `error:${event?.message || "unknown"}:${event?.filename || ""}:${event?.lineno || 0}`;
+  const now = Date.now();
+  if (shouldShowGlobalToast(key, now)) {
+    window.ReclaimNotifications.error("حدث خطأ غير متوقع");
+  }
 });
 
 // معالج لأخطاء Promise
 // Promise rejection handler
 window.addEventListener("unhandledrejection", (event) => {
   console.error("Unhandled promise rejection:", event.reason);
-  window.ReclaimNotifications.error("حدث خطأ في العملية");
+
+  const reasonText = typeof event.reason === "string"
+    ? event.reason
+    : (event.reason?.message || "promise-rejection");
+  const key = `promise:${reasonText}`;
+  const now = Date.now();
+
+  if (shouldShowGlobalToast(key, now)) {
+    window.ReclaimNotifications.error("حدث خطأ في العملية");
+  }
 });

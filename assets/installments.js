@@ -5,6 +5,30 @@
   let installmentSort = { key: "dueDate", dir: "asc" };
   let modalAction = null;
 
+  function getTodayDate() {
+    return "2026-04-08";
+  }
+
+  function showPaymentSummaryAlert() {
+    if (!window.ReclaimNotifications) return;
+
+    const today = getTodayDate();
+    const sessionKey = `reclaim.installments.alerts.${today}`;
+    if (sessionStorage.getItem(sessionKey)) return;
+
+    const paidCount = installments.filter((inst) => inst.status === "paid").length;
+    if (paidCount > 0) {
+      window.ReclaimNotifications.info(`إشعار: تم تسجيل ${paidCount} دفعة في النظام.`);
+    }
+
+    const overdueCount = installments.filter((inst) => inst.status === "overdue").length;
+    if (overdueCount > 0) {
+      window.ReclaimNotifications.warning(`تنبيه: يوجد ${overdueCount} تقسيط متأخر يحتاج متابعة.`);
+    }
+
+    sessionStorage.setItem(sessionKey, "1");
+  }
+
   function renderInstallments() {
     const search = byId("installmentSearch").value.trim().toLowerCase();
     const statusFilter = byId("installmentStatusFilter").value;
@@ -43,8 +67,6 @@
             <td>${inst.lateDays}</td>
             <td>
               <div class="controls">
-                <button class="btn-outline" data-action="expandInst" data-inst-id="${inst.id}">Details</button>
-                <button class="btn-primary" data-action="markInstPaid" data-inst-id="${inst.id}">Mark Paid</button>
               </div>
             </td>
           </tr>
@@ -149,6 +171,9 @@
 
           renderInstallments();
           updateSharedMetrics();
+          if (window.ReclaimNotifications) {
+            window.ReclaimNotifications.success(`تم الدفع: ${inst.customerName} - ${inst.id}`);
+          }
         }
       );
     }
@@ -156,4 +181,5 @@
 
   renderInstallments();
   updateSharedMetrics();
+  showPaymentSummaryAlert();
 })();

@@ -225,7 +225,12 @@
 
   function addActivityComment() {
     const comment = byId("activityComment").value.trim();
-    if (!comment) return;
+    if (!comment) {
+      if (window.ReclaimNotifications) {
+        window.ReclaimNotifications.warning("اكتب تعليق قبل الحفظ");
+      }
+      return;
+    }
 
     const entry = {
       title: "Agent Note",
@@ -236,8 +241,16 @@
     customer.activity = customer.activity || [];
     customer.activity.unshift(entry);
     customer.latestComments = comment;
+
+    if (window.ReclaimDataStore && typeof window.ReclaimDataStore.save === "function") {
+      window.ReclaimDataStore.save();
+    }
+
     byId("activityComment").value = "";
     renderActivity();
+    if (window.ReclaimNotifications) {
+      window.ReclaimNotifications.success(`تم إضافة تعليق جديد لـ ${customer.name}`);
+    }
   }
 
   byId("historySearch").addEventListener("input", renderHistory);

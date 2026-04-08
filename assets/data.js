@@ -258,6 +258,59 @@ paidDemoCustomers.forEach((customer) => {
 });
 
 // ============================================
+// حفظ البيانات محلياً | LOCAL DATA PERSISTENCE
+// ============================================
+const RECLAIM_STORAGE_KEY = "reclaim.data.v1";
+
+function loadPersistedReclaimData() {
+  try {
+    const raw = localStorage.getItem(RECLAIM_STORAGE_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw);
+    if (!parsed || !Array.isArray(parsed.customers) || !Array.isArray(parsed.installments)) {
+      return null;
+    }
+
+    return parsed;
+  } catch (error) {
+    console.warn("Failed to load persisted ReClaim data:", error);
+    return null;
+  }
+}
+
+function persistReclaimData() {
+  try {
+    const snapshot = {
+      customers: window.ReclaimData.customers,
+      installments: window.ReclaimData.installments,
+      analytics: window.ReclaimData.analytics
+    };
+    localStorage.setItem(RECLAIM_STORAGE_KEY, JSON.stringify(snapshot));
+  } catch (error) {
+    console.warn("Failed to persist ReClaim data:", error);
+  }
+}
+
+const persistedReclaimData = loadPersistedReclaimData();
+if (persistedReclaimData) {
+  window.ReclaimData.customers = persistedReclaimData.customers;
+  window.ReclaimData.installments = persistedReclaimData.installments;
+  if (persistedReclaimData.analytics) {
+    window.ReclaimData.analytics = persistedReclaimData.analytics;
+  }
+} else {
+  persistReclaimData();
+}
+
+window.ReclaimDataStore = {
+  save: persistReclaimData,
+  clear() {
+    localStorage.removeItem(RECLAIM_STORAGE_KEY);
+  }
+};
+
+// ============================================
 // الثوابت والإعدادات | CONSTANTS & SETTINGS
 // ============================================
 // نطاقات حساب العمولة - كلما زادت نسبة التحصيل، زادت العمولة
@@ -496,6 +549,11 @@ window.ReclaimUtils = {
     if (metricPayments) metricPayments.textContent = paidInstallments;
     if (metricAvgDays) metricAvgDays.textContent = avgDays;
     if (metricCommission) metricCommission.textContent = window.ReclaimUtils.formatCurrency(commissionSummary.totalCommission);
+
+    // حفظ أي تغييرات تمت على البيانات (مثل التعليقات والدفعات)
+    if (window.ReclaimDataStore && typeof window.ReclaimDataStore.save === "function") {
+      window.ReclaimDataStore.save();
+    }
   }
 };
 
