@@ -8,22 +8,11 @@
 
 html,
 body {
-  background:
-    radial-gradient(circle at 10% 10%, rgba(15, 118, 110, 0.16), transparent 34%),
-    radial-gradient(circle at 92% 12%, rgba(11, 79, 108, 0.15), transparent 28%),
-    linear-gradient(180deg, #f5f7f9 0%, #edf3f7 100%);
+  background: #edf3f7;
 }
 
 body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.25) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.18), transparent 72%);
-  opacity: 0.35;
+  content: none;
 }
 
 .app-shell {
@@ -113,9 +102,7 @@ body::before {
   overflow: hidden;
   padding: 24px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background:
-    radial-gradient(circle at 85% 12%, rgba(255, 255, 255, 0.18), transparent 26%),
-    linear-gradient(135deg, #0f766e 0%, #0b4f6c 100%);
+  background: #0b4f6c;
 }
 
 .hero::after {
@@ -144,7 +131,7 @@ body::before {
 
 .metric-card,
 .summary-item {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 251, 253, 0.96));
+  background: rgba(248, 251, 253, 0.96);
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
@@ -230,7 +217,7 @@ button,
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #0f766e, #0b4f6c);
+  background: #0f766e;
   box-shadow: 0 10px 18px rgba(11, 79, 108, 0.16);
 }
 
@@ -270,7 +257,7 @@ table {
 }
 
 thead {
-  background: linear-gradient(180deg, #eef7fb, #e8f2f7);
+  background: #e8f2f7;
 }
 
 th,

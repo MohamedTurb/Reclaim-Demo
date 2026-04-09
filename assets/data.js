@@ -196,78 +196,119 @@ const MOCK_CUSTOMER_PHOTOS = [
 // توليد البيانات الوهمية الإضافية
 // GENERATING ADDITIONAL MOCK DATA
 // ============================================
-// توليد 21 عميل إضافي بشكل عشوائي من القوائم أعلاه
-// Generate 21 additional customers randomly from the lists above
-const mockCustomers = MOCK_CUSTOMER_NAMES.map((name, index) => {
+// توليد 96 عميل إضافي بحيث يصبح الإجمالي 100 عميل
+// Generate 96 additional customers so total reaches 100 customers
+const TARGET_TOTAL_CUSTOMERS = 100;
+const ADDITIONAL_CUSTOMERS_COUNT = Math.max(TARGET_TOTAL_CUSTOMERS - window.ReclaimData.customers.length, 0);
+const ASSIGNABLE_STAFF_IDS = ["U-1002", "U-1003"];
+const OVERDUE_SEGMENTS = [
+  { code: "paid", count: 20, minDays: 0, maxDays: 0 },
+  { code: "1-30", count: 24, minDays: 1, maxDays: 30 },
+  { code: "30-60", count: 20, minDays: 31, maxDays: 60 },
+  { code: "60-90", count: 16, minDays: 61, maxDays: 90 },
+  { code: "90+", count: 16, minDays: 91, maxDays: 140 }
+];
+
+function dueDateFromDaysPastDue(daysPastDue) {
+  const baseDate = new Date("2026-04-09T00:00:00");
+  const daysToShift = Number(daysPastDue) || 0;
+  baseDate.setDate(baseDate.getDate() - daysToShift);
+  return baseDate.toISOString().slice(0, 10);
+}
+
+function getSegmentFromIndex(index) {
+  let cursor = 0;
+  for (const segment of OVERDUE_SEGMENTS) {
+    cursor += segment.count;
+    if (index < cursor) return segment;
+  }
+  return OVERDUE_SEGMENTS[OVERDUE_SEGMENTS.length - 1];
+}
+
+const mockCustomers = Array.from({ length: ADDITIONAL_CUSTOMERS_COUNT }, (_, index) => {
   const customerNumber = 1005 + index;
-  const priorityCycle = ["high", "medium", "low"];
-  const openInstallments = (index % 4) + 1;
-  const paidInstallments = 5 + (index % 8);
-  const totalOverdue = 380 + index * 95;
-  const assignedCollectors = ["U-1002", "U-1003"];
-  const assignedTo = assignedCollectors[index % assignedCollectors.length];
+  const segment = getSegmentFromIndex(index);
+  const nameSeed = MOCK_CUSTOMER_NAMES[index % MOCK_CUSTOMER_NAMES.length];
+  const name = `${nameSeed} ${String(index + 1).padStart(2, "0")}`;
+  const city = MOCK_CUSTOMER_CITIES[index % MOCK_CUSTOMER_CITIES.length];
+  const daysSpan = Math.max(segment.maxDays - segment.minDays + 1, 1);
+  const daysPastDue = segment.code === "paid" ? 0 : segment.minDays + (index % daysSpan);
+  const overdueAmount = segment.code === "paid" ? 0 : 420 + (index * 37) % 2900;
+  const priority = daysPastDue >= 61 ? "high" : daysPastDue >= 31 ? "medium" : "low";
+  const isPaid = segment.code === "paid";
 
   return {
     id: `C-${customerNumber}`,
     name,
     photo: MOCK_CUSTOMER_PHOTOS[index % MOCK_CUSTOMER_PHOTOS.length],
-    contact: `+20 10${String(7000000 + index).padStart(7, "0")}`,
+    contact: `+20 10${String(7100000 + index).padStart(7, "0")}`,
     email: `${name.toLowerCase().replace(/\s+/g, ".")}@example.com`,
-    address: `${12 + index} ${MOCK_CUSTOMER_CITIES[index % MOCK_CUSTOMER_CITIES.length]}, Cairo`,
-    overdueAmount: totalOverdue,
-    daysPastDue: 4 + (index % 55),
-    latestComments: "Demo profile generated for presentation.",
-    priority: priorityCycle[index % priorityCycle.length],
-    assigned_to: assignedTo,
+    address: `${20 + (index % 80)} ${city}, Cairo`,
+    overdueAmount,
+    daysPastDue,
+    latestComments: isPaid
+      ? "Account fully paid in latest cycle."
+      : `Customer falls in ${segment.code} overdue category.`,
+    priority,
+    assigned_to: ASSIGNABLE_STAFF_IDS[index % ASSIGNABLE_STAFF_IDS.length],
     summary: {
-      totalOverdue,
-      openInstallments,
-      paidInstallments
+      totalOverdue: overdueAmount,
+      openInstallments: isPaid ? 0 : 1 + (index % 4),
+      paidInstallments: isPaid ? 10 + (index % 5) : 5 + (index % 6)
     },
     activity: [
       {
-        title: "Reminder Sent",
-        detail: "Auto reminder delivered via SMS.",
-        date: "2026-04-07"
+        title: isPaid ? "Payment Posted" : "Reminder Sent",
+        detail: isPaid ? "Installment paid and reconciled." : "Automated reminder sent to customer.",
+        date: "2026-04-08"
       },
       {
         title: "Follow-up Scheduled",
-        detail: "Next contact planned by collections team.",
-        date: "2026-04-06"
+        detail: "Next review planned by collections team.",
+        date: "2026-04-07"
       }
     ],
     attachments: ["Installment_Agreement.pdf"]
   };
 });
 
-window.ReclaimData.customers.push(...mockCustomers);
+const generatedInstallments = mockCustomers.map((customer, index) => {
+  const isPaid = (customer.daysPastDue || 0) === 0;
+  let status = "paid";
 
-const paidDemoCustomers = window.ReclaimData.customers.slice(0, 15);
-const paidDemoInstallments = paidDemoCustomers.map((customer, index) => ({
-  id: `I-${3001 + index}`,
-  customerId: customer.id,
-  customerName: customer.name,
-  dueDate: `2026-03-${String(10 + (index % 18)).padStart(2, "0")}`,
-  amount: 300 + index * 35,
-  lateFee: 0,
-  status: "paid",
-  lateDays: 0,
-  details: "Demo paid installment added for presentation."
-}));
+  if (!isPaid) {
+    if (index % 5 === 0) {
+      status = "partial";
+    } else if (index % 4 === 0) {
+      status = "pending";
+    } else {
+      status = "overdue";
+    }
+  }
 
-window.ReclaimData.installments.push(...paidDemoInstallments);
+  const lateFee = isPaid ? 0 : Math.round((customer.overdueAmount || 0) * 0.06);
+  const installmentAmount = isPaid ? 350 + (index % 9) * 45 : Math.max((customer.overdueAmount || 0) - lateFee, 180);
 
-paidDemoCustomers.forEach((customer) => {
-  if (!customer.summary) return;
-
-  customer.summary.paidInstallments = (customer.summary.paidInstallments || 0) + 1;
-  customer.summary.openInstallments = Math.max((customer.summary.openInstallments || 0) - 1, 0);
+  return {
+    id: `I-${4001 + index}`,
+    customerId: customer.id,
+    customerName: customer.name,
+    dueDate: dueDateFromDaysPastDue(customer.daysPastDue || 0),
+    amount: installmentAmount,
+    lateFee,
+    status,
+    lateDays: customer.daysPastDue || 0,
+    details: isPaid ? "Customer paid this installment." : `Customer in ${customer.daysPastDue} days overdue bucket.`
+  };
 });
+
+window.ReclaimData.customers.push(...mockCustomers);
+window.ReclaimData.installments.push(...generatedInstallments);
 
 // ============================================
 // حفظ البيانات محلياً | LOCAL DATA PERSISTENCE
 // ============================================
-const RECLAIM_STORAGE_KEY = "reclaim.data.v1";
+const RECLAIM_STORAGE_KEY = "reclaim.data.v2";
 
 function loadPersistedReclaimData() {
   try {

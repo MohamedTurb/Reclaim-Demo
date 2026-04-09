@@ -23,8 +23,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: "IBM Plex Sans", sans-serif;
-  background: radial-gradient(circle at 12% 8%, #d9f2ef 0%, #f4f6f8 44%) no-repeat,
-    linear-gradient(180deg, #f4f6f8, #f0f4f7);
+  background: #f4f6f8;
   color: var(--ink);
   min-height: 100%;
 }
@@ -44,7 +43,7 @@ h4 {
 }
 
 .sidebar {
-  background: linear-gradient(180deg, #0b4f6c 0%, #08384c 100%);
+  background: #08384c;
   color: #ecf8ff;
   padding: 28px 20px;
   position: sticky;
@@ -134,7 +133,7 @@ h4 {
 }
 
 .hero {
-  background: linear-gradient(135deg, #0f766e, #0b4f6c);
+  background: #0b4f6c;
   color: #f5fcff;
   border-radius: var(--radius);
   padding: 20px;
@@ -718,7 +717,7 @@ th button {
   width: 78px;
   height: 78px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #0f766e, #0b4f6c);
+  background: #0f766e;
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -846,7 +845,7 @@ th button {
   display: grid;
   place-items: center;
   color: #2f5b71;
-  background: linear-gradient(180deg, #f7fcff, #edf5fa);
+  background: #edf5fa;
   text-align: center;
   padding: 12px;
   font-size: 0.92rem;
@@ -1174,9 +1173,7 @@ th button {
 .visual-card {
   padding: clamp(18px, 3.6vw, 34px);
   border-radius: 24px;
-  background:
-    radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.2), transparent 38%),
-    linear-gradient(140deg, #0f766e 0%, #0b4f6c 100%);
+  background: #0b4f6c;
   color: #f2fbff;
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 22px 45px rgba(11, 79, 108, 0.24);
