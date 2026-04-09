@@ -43,6 +43,16 @@
     });
   }
 
+  const getStoredUsers = () => {
+    try {
+      const raw = localStorage.getItem("reclaim.users.v1");
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_) {
+      return [];
+    }
+  };
+
   const rememberedEmail = localStorage.getItem("reclaimRememberedEmail");
   if (rememberedEmail) {
     emailInput.value = rememberedEmail;
@@ -76,7 +86,9 @@
       "collector@reclaim.com": { password: "reclaim123", role: "collector" },
       "admin@reclaim.com": { password: "admin123", role: "admin" }
     };
-    const account = validAccounts[email];
+    const account = validAccounts[email] || getStoredUsers().find((user) => {
+      return user.email?.toLowerCase() === email && user.password === password && user.active !== false;
+    });
 
     if (!account || account.password !== password) {
       setStatus("Invalid login details. Try the demo credentials shown below.", "error");
@@ -92,12 +104,12 @@
     }
 
     sessionStorage.setItem("reclaimAuthenticated", "true");
-    sessionStorage.setItem("reclaimUserRole", account.role);
+    sessionStorage.setItem("reclaimUserRole", account.role || "collector");
     setStatus("Login successful. Redirecting you now.", "success");
     window.ReclaimErrorHandler?.showNotification?.("Login successful. Redirecting...", "success");
 
     setTimeout(() => {
-      const returnTo = sessionStorage.getItem("reclaimReturnTo") || "index.html";
+      const returnTo = sessionStorage.getItem("reclaimReturnTo") || ((account.role || "collector") === "admin" ? "admin.html" : "index.html");
       sessionStorage.removeItem("reclaimReturnTo");
       window.location.href = returnTo;
     }, 300);

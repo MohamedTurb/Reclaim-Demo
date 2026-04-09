@@ -260,14 +260,16 @@
 
     const nameInput = byId("newUserName");
     const emailInput = byId("newUserEmail");
+    const passwordInput = byId("newUserPassword");
     const roleInput = byId("newUserRole");
 
     const name = (nameInput.value || "").trim();
     const email = (emailInput.value || "").trim().toLowerCase();
+    const password = (passwordInput.value || "").trim();
     const role = roleInput.value || "collector";
 
-    if (!name || !email) {
-      window.ReclaimNotifications?.warning("Please enter user name and email.");
+    if (!name || !email || !password) {
+      window.ReclaimNotifications?.warning("Please enter user name, email, and password.");
       return;
     }
 
@@ -281,6 +283,7 @@
       id: `U-${1000 + users.length + 1}`,
       name,
       email,
+      password,
       role,
       active: true,
       lastLogin: "Never"
@@ -291,6 +294,9 @@
     window.ReclaimNotifications?.success("User created successfully.");
 
     event.target.reset();
+    if (roleInput) {
+      roleInput.value = "collector";
+    }
     renderUsers();
     refreshMetrics();
     renderAudit();
