@@ -31,6 +31,7 @@ window.ReclaimData = {
       daysPastDue: 27,
       latestComments: "Requested extension until Friday.",
       priority: "high",
+      assigned_to: "U-1002",
       summary: { totalOverdue: 1320, openInstallments: 3, paidInstallments: 8 },
       activity: [
         { title: "Call Attempted", detail: "No answer at 10:30 AM.", date: "2026-04-05" },
@@ -49,6 +50,7 @@ window.ReclaimData = {
       daysPastDue: 11,
       latestComments: "Promised partial payment today.",
       priority: "medium",
+      assigned_to: "U-1002",
       summary: { totalOverdue: 840, openInstallments: 2, paidInstallments: 10 },
       activity: [
         { title: "Payment Received", detail: "120 EGP posted to account.", date: "2026-04-07" },
@@ -67,6 +69,7 @@ window.ReclaimData = {
       daysPastDue: 5,
       latestComments: "Email confirmation sent.",
       priority: "low",
+      assigned_to: "U-1003",
       summary: { totalOverdue: 450, openInstallments: 1, paidInstallments: 12 },
       activity: [
         { title: "Email Sent", detail: "Balance statement shared.", date: "2026-04-06" },
@@ -85,6 +88,7 @@ window.ReclaimData = {
       daysPastDue: 43,
       latestComments: "Escalated to legal review queue.",
       priority: "high",
+      assigned_to: "U-1003",
       summary: { totalOverdue: 2100, openInstallments: 4, paidInstallments: 6 },
       activity: [
         { title: "Case Escalated", detail: "Legal notice drafted.", date: "2026-04-07" },
@@ -200,6 +204,8 @@ const mockCustomers = MOCK_CUSTOMER_NAMES.map((name, index) => {
   const openInstallments = (index % 4) + 1;
   const paidInstallments = 5 + (index % 8);
   const totalOverdue = 380 + index * 95;
+  const assignedCollectors = ["U-1002", "U-1003"];
+  const assignedTo = assignedCollectors[index % assignedCollectors.length];
 
   return {
     id: `C-${customerNumber}`,
@@ -212,6 +218,7 @@ const mockCustomers = MOCK_CUSTOMER_NAMES.map((name, index) => {
     daysPastDue: 4 + (index % 55),
     latestComments: "Demo profile generated for presentation.",
     priority: priorityCycle[index % priorityCycle.length],
+    assigned_to: assignedTo,
     summary: {
       totalOverdue,
       openInstallments,

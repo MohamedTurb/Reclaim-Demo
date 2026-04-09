@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReClaim - Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="assets/auth.js"></script>
+  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/theme-overrides.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo-wrap">
+        <h1>ReClaim</h1>
+        <p>Debt Collection System Prototype</p>
+      </div>
+      <nav aria-label="Primary Modules">
+        <ul class="nav-list">
+          <li><a class="nav-link" href="overdue.html">Overdue Customers</a></li>
+          <li><a class="nav-link" href="installments.html">Installment Tracking</a></li>
+          <li><a class="nav-link" href="analytics.html">Analytics Dashboard</a></li>
+          <li><a class="nav-link" href="installments-history.html">Installment History</a></li>
+          <li><a class="nav-link active" href="admin.html">Admin Panel</a></li>
+          <li><button class="nav-link nav-logout" type="button" data-logout>Logout</button></li>
+        </ul>
+      </nav>
+
+      <p class="page-signature">Develop by turbo 01555379961</p>
+    </aside>
+
+    <main class="main">
+      <header class="hero">
+        <h2>Admin Control Panel</h2>
+        <p>Manage users and access, monitor system health, configure defaults, and run safe data actions from one place.</p>
+      </header>
+
+      <section class="grid-cards" aria-label="Admin top metrics">
+        <article class="metric-card">
+          <small>Total Users</small>
+          <strong id="metricUsers">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Active Users</small>
+          <strong id="metricActiveUsers">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Open Overdue Cases</small>
+          <strong id="metricAdminOverdue">0</strong>
+        </article>
+        <article class="metric-card">
+          <small>Pending Installments</small>
+          <strong id="metricAdminPending">0</strong>
+        </article>
+      </section>
+
+      <section class="card" aria-labelledby="staffAssignmentHeading">
+        <div class="row">
+          <h3 id="staffAssignmentHeading">Staff Performance & Customer Assignment</h3>
+        </div>
+        <p style="color:var(--muted);margin:0 0 12px 0;font-size:0.92rem;">Track collection performance by staff member and reassign customers when workload needs balancing.</p>
+
+        <div class="table-wrap" style="margin-bottom: 12px;">
+          <table aria-label="Staff performance table">
+            <thead>
+              <tr>
+                <th>Staff Name</th>
+                <th>Assigned Customers</th>
+                <th>Total Overdue (EGP)</th>
+                <th>Collected (EGP)</th>
+                <th>Collection Rate %</th>
+                <th>Avg Days Overdue</th>
+                <th>View Details</th>
+              </tr>
+            </thead>
+            <tbody id="staffPerformanceBody"></tbody>
+          </table>
+        </div>
+
+        <h4 style="margin: 8px 0;">Reassign Customers to Staff</h4>
+        <div class="row" style="margin-bottom:0;">
+          <div class="controls">
+            <select id="customerToReassign" aria-label="Select customer to reassign">
+              <option value="">-- Select Customer --</option>
+            </select>
+            <select id="newAssignedCollector" aria-label="Select new staff member">
+              <option value="">-- Assign To Staff --</option>
+            </select>
+            <button class="btn-primary" id="reassignCustomerBtn">Reassign</button>
+          </div>
+        </div>
+
+        <h4 style="margin: 14px 0 8px;">Bulk Reassign Customers</h4>
+        <div class="row" style="margin-bottom:0; align-items: flex-start;">
+          <div class="controls bulk-reassign-controls" style="width:100%;">
+            <select id="bulkOverdueRangeFilter" aria-label="Filter customers by overdue range">
+              <option value="all">All Customers</option>
+              <option value="1-30">1-30 days overdue</option>
+              <option value="30-60">30-60 days overdue</option>
+              <option value="60-90">60-90 days overdue</option>
+              <option value="90+">+90 days overdue</option>
+            </select>
+            <select id="customersToReassignMany" class="multi-select" multiple aria-label="Select multiple customers to reassign"></select>
+            <div class="controls bulk-action-stack" style="min-width: 220px;">
+              <label class="remember-row" for="bulkSelectAllToggle">
+                <input id="bulkSelectAllToggle" type="checkbox" />
+                <span>Select All / Clear All</span>
+              </label>
+              <label class="remember-row" for="bulkSelectOverdueToggle">
+                <input id="bulkSelectOverdueToggle" type="checkbox" />
+                <span>Select Overdue Only</span>
+              </label>
+              <button class="btn-primary" id="bulkReassignBtn" type="button">Bulk Reassign Selected</button>
+              <button class="btn-outline" id="autoDistributeAllBtn" type="button">Auto Distribute All Customers</button>
+              <small id="bulkSelectedCount" class="muted-copy">0 selected</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-grid" aria-label="Admin management layout">
+        <article class="card">
+          <div class="row">
+            <h3>User Access Management</h3>
+            <div class="controls">
+              <input id="adminUserSearch" type="search" placeholder="Search by name or email" aria-label="Search users" />
+              <select id="adminRoleFilter" aria-label="Filter by role">
+                <option value="all">All Roles</option>
+                <option value="admin">Admin</option>
+                <option value="manager">Manager</option>
+                <option value="collector">Collector</option>
+                <option value="viewer">Viewer</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table aria-label="Admin users table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Last Login</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminUsersBody"></tbody>
+            </table>
+          </div>
+
+          <form id="createUserForm" class="admin-form" novalidate>
+            <h4>Add New User</h4>
+            <div class="admin-form-grid">
+              <input id="newUserName" type="text" placeholder="Full name" required />
+              <input id="newUserEmail" type="email" placeholder="Work email" required />
+              <select id="newUserRole" required>
+                <option value="collector">Collector</option>
+                <option value="manager">Manager</option>
+                <option value="viewer">Viewer</option>
+                <option value="admin">Admin</option>
+              </select>
+              <button class="btn-primary" type="submit">Create User</button>
+            </div>
+          </form>
+        </article>
+
+        <article class="card">
+          <h3>System Configuration</h3>
+          <form id="settingsForm" class="admin-form" novalidate>
+            <div class="admin-form-stack">
+              <label for="settingGraceDays">Grace period days</label>
+              <input id="settingGraceDays" type="number" min="0" max="30" />
+
+              <label for="settingAutoReminder">Auto reminder lead time (days)</label>
+              <input id="settingAutoReminder" type="number" min="0" max="15" />
+
+              <label class="remember-row" for="settingEscalation">
+                <input id="settingEscalation" type="checkbox" />
+                <span>Enable legal escalation after 30+ days overdue</span>
+              </label>
+
+              <button class="btn-primary" type="submit">Save Settings</button>
+            </div>
+          </form>
+
+          <div class="admin-actions">
+            <h4>Data Actions</h4>
+            <div class="controls">
+              <button class="btn-outline" id="exportSnapshotBtn" type="button">Export Data Snapshot</button>
+              <button class="btn-warning" id="seedDemoUsersBtn" type="button">Reset Users to Demo</button>
+              <button class="btn-outline" id="clearNotificationsBtn" type="button">Clear Notification Center</button>
+              <button class="btn-danger" id="resetDataBtn" type="button">Reset All Demo Data</button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="card" aria-labelledby="auditHeading">
+        <div class="row">
+          <h3 id="auditHeading">Admin Audit Trail</h3>
+          <small id="lastUpdatedAt" class="muted-copy">Last updated: -</small>
+        </div>
+        <div id="auditList" class="activity-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="actionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <div class="row modal-header-row">
+        <h3 id="modalTitle">Action</h3>
+        <button id="modalCloseBtn" class="btn-outline" aria-label="Close modal">Close</button>
+      </div>
+      <p id="modalDesc" class="modal-desc"></p>
+      <textarea id="modalComment" placeholder="Additional notes..." style="min-height:110px;"></textarea>
+      <div class="controls controls-end">
+        <button id="modalConfirmBtn" class="btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/error-handler.js"></script>
+  <script src="assets/data.js"></script>
+  <script src="assets/admin.js"></script>
+</body>
+</html>

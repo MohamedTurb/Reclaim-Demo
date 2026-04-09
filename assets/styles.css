@@ -252,6 +252,11 @@ button {
   color: #202020;
 }
 
+.btn-danger {
+  background: var(--danger);
+  color: #ffffff;
+}
+
 .table-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -317,6 +322,112 @@ th button {
 .status-partial {
   color: #fff;
   background: var(--info);
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.admin-form {
+  margin-top: 14px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.admin-form h4,
+.admin-actions h4 {
+  margin-bottom: 10px;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.admin-form-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-actions {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.muted-copy {
+  color: var(--muted);
+}
+
+.activity-entry {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  background: #ffffff;
+}
+
+.activity-entry p {
+  margin: 8px 0 0;
+  line-height: 1.45;
+}
+
+.activity-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.row-muted {
+  color: var(--muted);
+}
+
+.multi-select {
+  min-width: min(560px, 100%);
+  min-height: 170px;
+}
+
+.bulk-action-stack {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.bulk-reassign-controls {
+  align-items: flex-start;
+}
+
+#bulkOverdueRangeFilter {
+  align-self: flex-start;
+  min-height: 40px;
+  height: 40px;
+  min-width: 220px;
+  max-width: 240px;
+}
+
+.bulk-action-stack .remember-row {
+  margin: 0;
+}
+
+.bulk-action-stack button,
+#reassignCustomerBtn,
+.admin-actions .controls button,
+.admin-form-grid button {
+  min-height: 42px;
+  padding: 10px 14px;
+  font-size: 0.92rem;
+}
+
+.bulk-action-stack button {
+  width: 100%;
+}
+
+.bulk-action-stack .muted-copy {
+  text-align: center;
 }
 
 .customer-link {
@@ -1151,6 +1262,14 @@ th button {
 @media (max-width: 900px) {
   .controls {
     width: 100%;
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form-grid {
+    grid-template-columns: 1fr;
   }
 
   .controls input,

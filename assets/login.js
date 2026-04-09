@@ -72,10 +72,13 @@
       return;
     }
 
-    const validEmail = "collector@reclaim.com";
-    const validPassword = "reclaim123";
+    const validAccounts = {
+      "collector@reclaim.com": { password: "reclaim123", role: "collector" },
+      "admin@reclaim.com": { password: "admin123", role: "admin" }
+    };
+    const account = validAccounts[email];
 
-    if (email !== validEmail || password !== validPassword) {
+    if (!account || account.password !== password) {
       setStatus("Invalid login details. Try the demo credentials shown below.", "error");
       window.ReclaimErrorHandler?.showNotification?.("Invalid login details. Try the demo credentials.", "error");
       setInvalid(emailInput);
@@ -89,6 +92,7 @@
     }
 
     sessionStorage.setItem("reclaimAuthenticated", "true");
+    sessionStorage.setItem("reclaimUserRole", account.role);
     setStatus("Login successful. Redirecting you now.", "success");
     window.ReclaimErrorHandler?.showNotification?.("Login successful. Redirecting...", "success");
 

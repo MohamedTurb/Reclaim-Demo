@@ -25,6 +25,7 @@
           <li><a class="nav-link" href="installments.html">Installment Tracking</a></li>
           <li><a class="nav-link active" href="analytics.html">Analytics Dashboard</a></li>
           <li><a class="nav-link" href="installments-history.html">Installment History</a></li>
+          <li><a class="nav-link" href="admin.html">Admin Panel</a></li>
           <li><button class="nav-link nav-logout" type="button" data-logout>Logout</button></li>
         </ul>
       </nav>
@@ -82,6 +83,17 @@
           <canvas id="commissionChart" aria-label="Commission distribution chart" role="img"></canvas>
         </div>
       </div>
+
+      <section class="card" aria-labelledby="staffAnalyticsHeading" style="margin-bottom: 16px;">
+        <div class="row">
+          <h3 id="staffAnalyticsHeading">Employee Performance Analytics</h3>
+          <small id="staffAnalyticsPeriodLabel" class="muted-copy">Period: -</small>
+        </div>
+        <p id="staffAnalyticsNote" class="analysis-note" style="margin-top:0;">Overdue load and collection rate per staff member for the selected period.</p>
+        <div class="chart-box">
+          <canvas id="staffPerformanceChart" aria-label="Employee performance chart" role="img"></canvas>
+        </div>
+      </section>
 
       <section class="card" aria-labelledby="analysisControlsHeading">
         <div class="row">

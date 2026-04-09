@@ -20,7 +20,8 @@
 
   if (isLoginPage) {
     if (isAuthenticated) {
-      window.location.replace("index.html");
+      const role = sessionStorage.getItem("reclaimUserRole") || "collector";
+      window.location.replace(role === "admin" ? "admin.html" : "index.html");
       return;
     }
 
@@ -44,6 +45,7 @@
 
     event.preventDefault();
     sessionStorage.removeItem("reclaimAuthenticated");
+    sessionStorage.removeItem("reclaimUserRole");
     sessionStorage.removeItem("reclaimReturnTo");
     window.location.replace("login.html");
   });

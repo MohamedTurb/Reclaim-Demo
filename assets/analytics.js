@@ -1,8 +1,8 @@
 (() => {
-  const { installments } = window.ReclaimData;
+  const { installments, customers } = window.ReclaimData;
   const { byId, formatCurrency, formatPercent, getCommissionRate } = window.ReclaimUtils;
 
-  let installmentsChart, valueChart, collectionRateChart, commissionChart;
+  let installmentsChart, valueChart, collectionRateChart, commissionChart, staffPerformanceChart;
 
   const bucketDefinitions = [
     { label: "April 5, 2026", start: "2026-04-05", end: "2026-05-05" },
@@ -64,6 +64,148 @@
       commissionRate,
       compensation
     };
+  }
+
+  function isAssignableRole(role) {
+    return role === "collector" || role === "manager";
+  }
+
+  function getUsersDirectory() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem("reclaim.users.v1") || "[]");
+      if (Array.isArray(parsed) && parsed.length) {
+        return parsed;
+      }
+    } catch (_) {
+      // Ignore and fallback to assignment-derived users.
+    }
+
+    const assignedIds = Array.from(new Set((customers || []).map((customer) => customer.assigned_to).filter(Boolean)));
+    return assignedIds.map((id) => ({ id, name: id, role: "collector", active: true }));
+  }
+
+  function getStaffAnalyticsRows(selectedPeriod) {
+    const users = getUsersDirectory().filter((user) => isAssignableRole(user.role));
+
+    return users
+      .map((user) => {
+        const assignedCustomers = (customers || []).filter((customer) => customer.assigned_to === user.id);
+        const customerIds = new Set(assignedCustomers.map((customer) => customer.id));
+
+        const staffInstallments = (installments || []).filter((installment) => {
+          if (!customerIds.has(installment.customerId)) return false;
+          return isWithin(installment.dueDate, selectedPeriod.start, selectedPeriod.end);
+        });
+
+        const totalDue = staffInstallments.reduce((sum, installment) => sum + (installment.amount || 0) + (installment.lateFee || 0), 0);
+        const totalCollected = staffInstallments.reduce((sum, installment) => {
+          const share = window.ReclaimUtils.getInstallmentCollectionShare(installment);
+          return sum + ((installment.amount || 0) + (installment.lateFee || 0)) * share;
+        }, 0);
+        const collectionRate = totalDue ? (totalCollected / totalDue) * 100 : 0;
+        const overdueLoad = assignedCustomers.reduce((sum, customer) => sum + (customer.overdueAmount || 0), 0);
+
+        return {
+          id: user.id,
+          name: user.name || user.id,
+          assignedCount: assignedCustomers.length,
+          overdueLoad,
+          totalDue,
+          totalCollected,
+          collectionRate
+        };
+      })
+      .filter((row) => row.assignedCount > 0)
+      .sort((a, b) => b.overdueLoad - a.overdueLoad);
+  }
+
+  function renderStaffAnalyticsChart(selectedPeriod) {
+    const chartCanvas = byId("staffPerformanceChart");
+    const noteEl = byId("staffAnalyticsNote");
+    const periodEl = byId("staffAnalyticsPeriodLabel");
+    if (!chartCanvas || typeof Chart === "undefined") return;
+
+    if (periodEl) {
+      periodEl.textContent = `Period: ${selectedPeriod.label}`;
+    }
+
+    const rows = getStaffAnalyticsRows(selectedPeriod);
+    if (!rows.length) {
+      if (noteEl) {
+        noteEl.textContent = "No assigned staff data is available for the selected period.";
+      }
+
+      if (staffPerformanceChart) {
+        staffPerformanceChart.destroy();
+        staffPerformanceChart = null;
+      }
+      return;
+    }
+
+    if (noteEl) {
+      noteEl.textContent = "Overdue load and collection rate per staff member for the selected period.";
+    }
+
+    const labels = rows.map((row) => row.name);
+    const overdueLoads = rows.map((row) => row.overdueLoad);
+    const collectionRates = rows.map((row) => Number(row.collectionRate.toFixed(1)));
+
+    if (staffPerformanceChart) staffPerformanceChart.destroy();
+    const ctx = chartCanvas.getContext("2d");
+    staffPerformanceChart = new Chart(ctx, {
+      data: {
+        labels,
+        datasets: [
+          {
+            type: "bar",
+            label: "Overdue Load (EGP)",
+            data: overdueLoads,
+            backgroundColor: "rgba(239, 68, 68, 0.7)",
+            borderColor: "#ef4444",
+            borderWidth: 1,
+            yAxisID: "y"
+          },
+          {
+            type: "line",
+            label: "Collection Rate %",
+            data: collectionRates,
+            borderColor: "#0f766e",
+            backgroundColor: "rgba(15, 118, 110, 0.15)",
+            tension: 0.35,
+            fill: false,
+            yAxisID: "y1"
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "bottom" },
+          tooltip: {
+            callbacks: {
+              label(context) {
+                if (context.dataset.yAxisID === "y") {
+                  return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
+                }
+                return `${context.dataset.label}: ${context.raw}%`;
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            position: "left"
+          },
+          y1: {
+            beginAtZero: true,
+            max: 100,
+            position: "right",
+            grid: { drawOnChartArea: false }
+          }
+        }
+      }
+    });
   }
 
   function initializeCharts(bucketRows) {
@@ -256,6 +398,7 @@
     
     // Initialize charts with data
     initializeCharts(bucketRows);
+    renderStaffAnalyticsChart(selectedPeriod);
   }
 
   byId("collectionPeriodSelector").addEventListener("change", renderAnalysis);
