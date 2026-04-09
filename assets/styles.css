@@ -50,6 +50,8 @@ h4 {
   position: sticky;
   top: 0;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .logo-wrap {
@@ -73,6 +75,15 @@ h4 {
   margin: 0;
   display: grid;
   gap: 10px;
+}
+
+.page-signature {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  color: #b8deed;
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 .nav-btn {
@@ -919,6 +930,14 @@ th button {
   padding: clamp(18px, 3.2vw, 34px);
 }
 
+.login-signature {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #d9e5eb;
+  color: #5d7282;
+  text-align: center;
+}
+
 .login-eyebrow {
   margin: 0;
   color: var(--brand);
@@ -1091,6 +1110,11 @@ th button {
     gap: 8px;
   }
 
+  .page-signature {
+    margin-top: 16px;
+    text-align: center;
+  }
+
   .nav-link,
   .nav-btn {
     min-height: 46px;
@@ -1245,6 +1269,10 @@ th button {
   .login-panel,
   .visual-card {
     border-radius: 16px;
+  }
+
+  .login-signature {
+    font-size: 0.78rem;
   }
 
   .login-meta {
